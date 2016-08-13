@@ -63,8 +63,18 @@
  	function create (game){
   		console.log("create");
  		setFullScreen(game);
+ 		game.world.setBounds(0, 0, worldWidth, screenHeight);
 
+ 		var giftBasic = game.add.sprite(400, 300, 'gift-basic');
+ 		giftBasic.anchor.setTo(0.5, 0.5);
 
+ 		game.add.tween(giftBasic).to({angle: giftBasic.angle + 360, tint: 0xFFF000}, 5000, "Linear", true, 0, -1);
+
+		var giftGlasses = game.add.sprite(200, 150, 'gift-glasses');
+ 		giftGlasses.anchor.setTo(0.5, 0.5);
+		
+		game.add.tween(giftGlasses).to({angle: 15, width: giftGlasses.width +20}, 250, "Linear", true, 0, -1, true);
+ 		
  	}
 
 	/**
