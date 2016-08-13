@@ -65,19 +65,36 @@
  		setFullScreen(game);
 
  		game.physics.startSystem(Phaser.Physics.ARCADE);
+ 		game.physics.arcade.gravity.y = 150;
  		game.world.setBounds(0, 0, worldWidth, screenHeight);
 
- 		var giftBasic = game.add.sprite(400, 300, 'gift-basic');
+ 		var giftBasic = game.add.sprite(400, -32.5, 'gift-basic');
  		game.physics.arcade.enable(giftBasic);
  		giftBasic.anchor.setTo(0.5, 0.5);
  		giftBasic.inputEnabled = true;
  		giftBasic.input.pixelPerfectClick = true;
- 		giftBasic.events.onInputDown.add(function(){giftBasic.kill();});
+ 		giftBasic.events.onInputDown.add(function(){giftBasic.destroy(giftBasic);});
+ 		giftBasic.body.velocity.y = 100;
+ 		giftBasic.checkWorldBounds = true;
+ 		giftBasic.events.onOutOfBounds.add(function(){giftBasic.destroy(giftBasic);});
+ 		giftBasic.events.onDestroy.add(function(){console.log("destroy");});
 
  		game.add.tween(giftBasic).to({angle: giftBasic.angle + 360, tint: 0xFFF000}, 5000, "Linear", true, 0, -1);
 
-		var giftGlasses = game.add.sprite(200, 150, 'gift-glasses');
+		var giftGlasses = game.add.sprite(200, -32.5, 'gift-glasses');
+		game.physics.arcade.enable(giftGlasses);
  		giftGlasses.anchor.setTo(0.5, 0.5);
+ 		giftGlasses.inputEnabled = true;
+ 		giftGlasses.input.pixelPerfectClick = true;
+ 		giftGlasses.events.onInputDown.add(function(){giftGlasses.destroy(giftGlasses);});
+ 		giftGlasses.body.angle = 90;
+ 		giftGlasses.body.velocity.x = 100;
+ 		giftGlasses.checkWorldBounds = true;
+ 		giftGlasses.events.onOutOfBounds.add(function(){giftGlasses.destroy(giftGlasses);});
+ 		giftGlasses.events.onDestroy.add(function(){console.log("destroy");});
+
+
+
 		
 		game.add.tween(giftGlasses).to({angle: 15, width: giftGlasses.width +20}, 250, "Linear", true, 0, -1, true);
  		
