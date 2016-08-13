@@ -18,3 +18,24 @@
  * @author manou.maret@gmail.com
  * @author timothee.maret@gmail.com
  */
+ window.onload = function() {
+
+ 	var screenWidth = 800, screenHeight = 600, worldWidth = 1.25 * screenWidth;
+ 	var game = new Phaser.Game(/*width*/screenWidth, /*height*/screenHeight, /*render*/Phaser.AUTO, /*parent*/'',
+ 		/*state*/{preload: preload, create: create, render: render, update: update},
+ 		/*transparent*/ false, /*antialias*/false, /*physicsConfig*/null); 
+ 
+
+ 	function preload (game){
+ 	}
+
+ 	function create (game){
+ 	}
+
+ 	function render (game){
+ 	}
+
+ 	function update (game){
+ 	}
+
+ }
