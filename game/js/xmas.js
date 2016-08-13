@@ -26,16 +26,28 @@
  		/*transparent*/ false, /*antialias*/false, /*physicsConfig*/null); 
  
 
-	/**
-         * Function called by Phaser once, when preloading the game (before the create function).
-         */
- 	function preload (game){
+ 	function setFullScreen (game){
+		game.scale.pageAlignHorizontally = true;
+		game.scale.pageAlignVertically = true;
+		game.scale.scaleMode = Phaser.ScaleManager.EXACT_FIT;
+		game.scale.setScreenSize = true;
  	}
 
 	/**
-         * Function called by Phaser once, when creating the game (after the preload method).
+     * Function called by Phaser once, when preloading the game (before the create function).
+     */
+ 	function preload (game){
+ 		console.log("preload");
+ 	}
+
+	/**
+     * Function called by Phaser once, when creating the game (after the preload method).
 	 */
  	function create (game){
+  		console.log("create");
+ 		setFullScreen(game);
+
+
  	}
 
 	/**
