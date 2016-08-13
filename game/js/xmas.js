@@ -38,6 +38,23 @@
      */
  	function preload (game){
  		console.log("preload");
+		game.load.spritesheet('gift-parcel', 'data/gift-parcel.png', 65, 65, 3);
+		game.load.image('gift-basic', 'data/gift-basic.png');
+		game.load.image('gift-candy', 'data/gift-candy.png');
+		game.load.image('gift-clock', 'data/gift-clock.png');
+		game.load.image('gift-compass', 'data/gift-compass.png');
+		game.load.image('gift-double', 'data/gift-double.png');
+		game.load.image('gift-freeze', 'data/gift-freeze.png');
+		game.load.image('gift-glasses', 'data/gift-glasses.png');
+		game.load.image('gift-ink', 'data/gift-ink.png');
+		game.load.image('gift-magnet', 'data/gift-magnet.png');
+		game.load.image('gift-pointer', 'data/gift-pointer.png');
+		game.load.image('gift-mushroom', 'data/gift-mushroom.png');
+		game.load.image('gift-potion', 'data/gift-potion.png');
+		game.load.image('gift-speedup', 'data/gift-speedup.png');
+		game.load.image('gift-thief', 'data/gift-thief.png');
+		game.load.image('gift-watch', 'data/gift-watch.png');
+		game.load.image('gift-bomb', 'data/gift-bomb.png');	
  	}
 
 	/**
