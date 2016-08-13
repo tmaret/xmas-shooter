@@ -26,15 +26,29 @@
  		/*transparent*/ false, /*antialias*/false, /*physicsConfig*/null); 
  
 
+	/**
+         * Function called by Phaser once, when preloading the game (before the create function).
+         */
  	function preload (game){
  	}
 
+	/**
+         * Function called by Phaser once, when creating the game (after the preload method).
+	 */
  	function create (game){
  	}
 
+	/**
+	 * Function called by Phaser everytime it computes a new state.
+	 * Ideally we don't use that function and use update instead.
+	 */
  	function render (game){
  	}
 
+	/**
+	 * Function called by Phaser everytime it computes a new state.
+	 * We put our game logic here.
+	 */
  	function update (game){
  	}
 
