@@ -20,6 +20,9 @@
  */
  window.onload = function() {
 
+ 	var score = 0;
+	var scoreText;
+
  	var screenWidth = 800, screenHeight = 600, worldWidth = 1.25 * screenWidth;
  	var game = new Phaser.Game(/*width*/screenWidth, /*height*/screenHeight, /*render*/Phaser.AUTO, /*parent*/'',
  		/*state*/{preload: preload, create: create, render: render, update: update},
@@ -31,6 +34,11 @@
 		game.scale.pageAlignVertically = true;
 		game.scale.scaleMode = Phaser.ScaleManager.EXACT_FIT;
 		game.scale.setScreenSize = true;
+ 	}
+
+ 	function updateScore(increment){
+ 		score += increment;
+ 		scoreText.text = 'Score : ' + score;
  	}
 
 	/**
@@ -68,16 +76,23 @@
  		game.physics.arcade.gravity.y = 150;
  		game.world.setBounds(0, 0, worldWidth, screenHeight);
 
+ 		scoreText = game.add.text(10, 10, '', {font: '34px Arial', fill: '#FFF'} );
+ 		updateScore(0);
+
  		var giftBasic = game.add.sprite(400, -32.5, 'gift-basic');
  		game.physics.arcade.enable(giftBasic);
  		giftBasic.anchor.setTo(0.5, 0.5);
  		giftBasic.inputEnabled = true;
  		giftBasic.input.pixelPerfectClick = true;
- 		giftBasic.events.onInputDown.add(function(){giftBasic.destroy(giftBasic);});
+ 		giftBasic.events.onInputDown.add(function(){
+ 			updateScore(giftBasic.data.score);
+ 			giftBasic.destroy(giftBasic);
+ 		});
  		giftBasic.body.velocity.y = 100;
  		giftBasic.checkWorldBounds = true;
  		giftBasic.events.onOutOfBounds.add(function(){giftBasic.destroy(giftBasic);});
  		giftBasic.events.onDestroy.add(function(){console.log("destroy");});
+ 		giftBasic.data.score = 50;
 
  		game.add.tween(giftBasic).to({angle: giftBasic.angle + 360, tint: 0xFFF000}, 5000, "Linear", true, 0, -1);
 
@@ -86,13 +101,16 @@
  		giftGlasses.anchor.setTo(0.5, 0.5);
  		giftGlasses.inputEnabled = true;
  		giftGlasses.input.pixelPerfectClick = true;
- 		giftGlasses.events.onInputDown.add(function(){giftGlasses.destroy(giftGlasses);});
+ 		giftGlasses.events.onInputDown.add(function(){
+ 			updateScore(giftGlasses.data.score);
+ 			giftGlasses.destroy(giftGlasses);
+ 		});
  		giftGlasses.body.angle = 90;
  		giftGlasses.body.velocity.x = 100;
  		giftGlasses.checkWorldBounds = true;
  		giftGlasses.events.onOutOfBounds.add(function(){giftGlasses.destroy(giftGlasses);});
  		giftGlasses.events.onDestroy.add(function(){console.log("destroy");});
-
+ 		giftGlasses.data.score = 0;
 
 
 		
