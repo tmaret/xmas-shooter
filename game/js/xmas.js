@@ -63,10 +63,16 @@
  	function create (game){
   		console.log("create");
  		setFullScreen(game);
+
+ 		game.physics.startSystem(Phaser.Physics.ARCADE);
  		game.world.setBounds(0, 0, worldWidth, screenHeight);
 
  		var giftBasic = game.add.sprite(400, 300, 'gift-basic');
+ 		game.physics.arcade.enable(giftBasic);
  		giftBasic.anchor.setTo(0.5, 0.5);
+ 		giftBasic.inputEnabled = true;
+ 		giftBasic.input.pixelPerfectClick = true;
+ 		giftBasic.events.onInputDown.add(function(){giftBasic.kill();});
 
  		game.add.tween(giftBasic).to({angle: giftBasic.angle + 360, tint: 0xFFF000}, 5000, "Linear", true, 0, -1);
 
@@ -75,6 +81,7 @@
 		
 		game.add.tween(giftGlasses).to({angle: 15, width: giftGlasses.width +20}, 250, "Linear", true, 0, -1, true);
  		
+
  	}
 
 	/**
