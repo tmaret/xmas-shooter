@@ -25,6 +25,9 @@
  	var score = 0;
 	var scoreText;
 
+	var scoreMultiplicator = 1;
+	var scoreMultiplicatorEndTime = 0;
+
  	var screenWidth = 800, screenHeight = 600, worldWidth = 1.25 * screenWidth;
  	var game = new Phaser.Game(/*width*/screenWidth, /*height*/screenHeight, /*render*/Phaser.AUTO, /*parent*/'',
  		/*state*/{preload: preload, create: create, render: render, update: update},
@@ -39,9 +42,12 @@
  	}
 
  	function updateScore(increment){
- 		score += increment;
+ 		score += increment * scoreMultiplicator;
  		score = Math.max(0, score);
  		scoreText.text = 'Score : ' + score;
+ 		if (scoreMultiplicator !== 1) {
+ 			scoreText.text +=  ' (x' + scoreMultiplicator + ')';
+ 		}
  	}
 
  	function createGiftEmitter(game, maxParticles, key, basePoints, onClick) {
@@ -118,7 +124,7 @@
 		});
 		giftEmitters.mushroom.flow(10000, 1200, 2, -1);
 
-		// Create am emitter for the freeze gifts
+		// Create an emitter for the freeze gifts
 
 		giftEmitters.freeze = createGiftEmitter(game, 10, 'gift-freeze', 0, function(gift) {
 			// TODO freeze all the emitters (stop emitting new gift, stop the existing gifts, maybe by stopping gravity ...)
@@ -126,6 +132,25 @@
 		});
 		giftEmitters.freeze.flow(/* lifespan in ms */ 10000, /* frequency in ms */ 5000, /* quantity */ 1, /* total */ -1, /* immediate */ false);
 		giftEmitters.freeze.on = false;
+
+
+
+
+		// Create an emitter for the double gifts
+
+
+		giftEmitters.double = createGiftEmitter(game, 1, 'gift-double', 200, function(gift) {
+			var scoreIncrement = Math.round(gift.data.basePoints / Math.pow(gift.scale.x, 2));
+			scoreMultiplicator = 2;
+			scoreMultiplicatorEndTime = game.time.time + 10000;
+			updateScore(scoreIncrement);
+			gift.kill();
+		});
+		giftEmitters.double.flow(/* lifespan in ms */ 10000, /* frequency in ms */ 2000, /* quantity */ 1, /* total */ -1, /* immediate */ false);
+		giftEmitters.double.on = false;
+
+
+
  	}
 
 	/**
@@ -144,6 +169,16 @@
  		// start the emitters depending on the score
  		if (score > 1000) {
 			giftEmitters.freeze.on = true;
+ 		}
+
+ 		if (score > 2000) {
+			giftEmitters.double.on = true;
+ 		}
+
+ 		// update the multiplicator
+ 		if (scoreMultiplicatorEndTime < game.time.time) {
+ 			scoreMultiplicator = 1;
+ 			updateScore(0);
  		}
 
  	}
