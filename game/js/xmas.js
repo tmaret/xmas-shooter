@@ -115,7 +115,28 @@
 
 		
 		game.add.tween(giftGlasses).to({angle: 15, width: giftGlasses.width +20}, 250, "Linear", true, 0, -1, true);
- 		
+
+		// Create an emitter for the basic gifts
+
+		var giftBasicEmitter = game.add.emitter(game.world.centerX, 0, 100);
+		giftBasicEmitter.setSize(game.world.width, 0);
+		giftBasicEmitter.inputEnableChildren = true;
+    	giftBasicEmitter.makeParticles('gift-basic');
+		giftBasicEmitter.setAll('data', {'basePoints': 100});
+		giftBasicEmitter.callAll('events.onInputDown.add', 'events.onInputDown', function(gift) {
+			// When clicking on a gift, compute the score
+			// The score depends on the base points & gift scale
+			var scoreIncrement = Math.round(gift.data.basePoints / Math.pow(gift.scale.x, 2)); // include gift.body.velocity.y in the formula ?
+			updateScore(scoreIncrement);
+			gift.kill();
+		});
+    	giftBasicEmitter.minParticleScale = 0.5;
+    	giftBasicEmitter.maxParticleScale = 1;
+    	giftBasicEmitter.minRotation = -45;
+		giftBasicEmitter.maxRotation = 45;
+		giftBasicEmitter.setXSpeed(-5, 5);
+		giftBasicEmitter.flow(10000, 1000, 2, -1);
+
 
  	}
 
