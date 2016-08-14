@@ -40,6 +40,7 @@
 
  	function updateScore(increment){
  		score += increment;
+ 		score = Math.max(0, score);
  		scoreText.text = 'Score : ' + score;
  	}
 
@@ -96,43 +97,6 @@
  		scoreText = game.add.text(10, 10, '', {font: '34px Arial', fill: '#FFF'} );
  		updateScore(0);
 
- 		/*var giftBasic = game.add.sprite(400, -32.5, 'gift-basic');
- 		game.physics.arcade.enable(giftBasic);
- 		giftBasic.anchor.setTo(0.5, 0.5);
- 		giftBasic.inputEnabled = true;
- 		giftBasic.input.pixelPerfectClick = true;
- 		giftBasic.events.onInputDown.add(function(){
- 			updateScore(giftBasic.data.score);
- 			giftBasic.destroy(giftBasic);
- 		});
- 		giftBasic.body.velocity.y = 100;
- 		giftBasic.checkWorldBounds = true;
- 		giftBasic.events.onOutOfBounds.add(function(){giftBasic.destroy(giftBasic);});
- 		giftBasic.events.onDestroy.add(function(){console.log("destroy");});
- 		giftBasic.data.score = 50;
-
- 		game.add.tween(giftBasic).to({angle: giftBasic.angle + 360, tint: 0xFFF000}, 5000, "Linear", true, 0, -1);
-
-		var giftGlasses = game.add.sprite(200, -32.5, 'gift-glasses');
-		game.physics.arcade.enable(giftGlasses);
- 		giftGlasses.anchor.setTo(0.5, 0.5);
- 		giftGlasses.inputEnabled = true;
- 		giftGlasses.input.pixelPerfectClick = true;
- 		giftGlasses.events.onInputDown.add(function(){
- 			updateScore(giftGlasses.data.score);
- 			giftGlasses.destroy(giftGlasses);
- 		});
- 		giftGlasses.body.angle = 90;
- 		giftGlasses.body.velocity.x = 100;
- 		giftGlasses.checkWorldBounds = true;
- 		giftGlasses.events.onOutOfBounds.add(function(){giftGlasses.destroy(giftGlasses);});
- 		giftGlasses.events.onDestroy.add(function(){console.log("destroy");});
- 		giftGlasses.data.score = 0;
-
-
-		
-		game.add.tween(giftGlasses).to({angle: 15, width: giftGlasses.width +20}, 250, "Linear", true, 0, -1, true);*/
-
 		// Create an emitter for the basic gifts
 
 		giftEmitters.basic = createGiftEmitter(game, 100, 'gift-basic', 100, function(gift) {
@@ -145,34 +109,23 @@
 		});
 		giftEmitters.basic.flow(10000, 1000, 2, -1);
 
+		// Create an emitter for the mushroom gifts
+
+		giftEmitters.mushroom = createGiftEmitter(game, 100, 'gift-mushroom', -50, function(gift) {
+			var scoreIncrement = Math.round(gift.data.basePoints / Math.pow(gift.scale.x, 2)); 
+			updateScore(scoreIncrement);
+			gift.kill();
+		});
+		giftEmitters.mushroom.flow(10000, 1200, 2, -1);
+
+		// Create am emitter for the freeze gifts
+
 		giftEmitters.freeze = createGiftEmitter(game, 10, 'gift-freeze', 0, function(gift) {
 			// TODO freeze all the emitters (stop emitting new gift, stop the existing gifts, maybe by stopping gravity ...)
 			gift.kill();
 		});
-		giftEmitters.freeze.flow(10000, 5000, 1, -1);
-
-/*
-		game.add.emitter(game.world.centerX, 0, 100);
-		giftEmitters.basic.setSize(game.world.width, 0);
-		giftEmitters.basic.inputEnableChildren = true;
-    	giftEmitters.basic.makeParticles('gift-basic');
-		giftEmitters.basic.setAll('data', {'basePoints': 100});
-		giftEmitters.basic.callAll('events.onInputDown.add', 'events.onInputDown', function(gift) {
-			// When clicking on a gift, compute the score
-			// The score depends on the base points & gift scale
-			var scoreIncrement = Math.round(gift.data.basePoints / Math.pow(gift.scale.x, 2)); // include gift.body.velocity.y in the formula ?
-			updateScore(scoreIncrement);
-			gift.kill();
-		});
-    	giftEmitters.basic.minParticleScale = 0.5;
-    	giftEmitters.basic.maxParticleScale = 1;
-    	giftEmitters.basic.minRotation = -45;
-		giftEmitters.basic.maxRotation = 45;
-		giftEmitters.basic.setXSpeed(-5, 5);
-		giftEmitters.basic.flow(10000, 1000, 2, -1);
-
-
-*/
+		giftEmitters.freeze.flow(/* lifespan in ms */ 10000, /* frequency in ms */ 5000, /* quantity */ 1, /* total */ -1, /* immediate */ false);
+		giftEmitters.freeze.on = false;
  	}
 
 	/**
@@ -187,6 +140,12 @@
 	 * We put our game logic here.
 	 */
  	function update (game){
+
+ 		// start the emitters depending on the score
+ 		if (score > 1000) {
+			giftEmitters.freeze.on = true;
+ 		}
+
  	}
 
  }
