@@ -20,6 +20,8 @@
  */
  window.onload = function() {
 
+ 	var giftEmitters = {};
+
  	var score = 0;
 	var scoreText;
 
@@ -39,6 +41,21 @@
  	function updateScore(increment){
  		score += increment;
  		scoreText.text = 'Score : ' + score;
+ 	}
+
+ 	function createGiftEmitter(game, maxParticles, key, basePoints, onClick) {
+ 		var emitter = game.add.emitter(game.world.centerX, 0, maxParticles);
+		emitter.setSize(game.world.width, 0);
+		emitter.inputEnableChildren = true;
+    	emitter.makeParticles(key);
+		emitter.setAll('data', {'basePoints': basePoints});
+		emitter.callAll('events.onInputDown.add', 'events.onInputDown', onClick);
+    	emitter.minParticleScale = 0.5;
+    	emitter.maxParticleScale = 1;
+    	emitter.minRotation = -45;
+		emitter.maxRotation = 45;
+		emitter.setXSpeed(-5, 5);
+		return emitter;
  	}
 
 	/**
@@ -79,7 +96,7 @@
  		scoreText = game.add.text(10, 10, '', {font: '34px Arial', fill: '#FFF'} );
  		updateScore(0);
 
- 		var giftBasic = game.add.sprite(400, -32.5, 'gift-basic');
+ 		/*var giftBasic = game.add.sprite(400, -32.5, 'gift-basic');
  		game.physics.arcade.enable(giftBasic);
  		giftBasic.anchor.setTo(0.5, 0.5);
  		giftBasic.inputEnabled = true;
@@ -114,30 +131,48 @@
 
 
 		
-		game.add.tween(giftGlasses).to({angle: 15, width: giftGlasses.width +20}, 250, "Linear", true, 0, -1, true);
+		game.add.tween(giftGlasses).to({angle: 15, width: giftGlasses.width +20}, 250, "Linear", true, 0, -1, true);*/
 
 		// Create an emitter for the basic gifts
 
-		var giftBasicEmitter = game.add.emitter(game.world.centerX, 0, 100);
-		giftBasicEmitter.setSize(game.world.width, 0);
-		giftBasicEmitter.inputEnableChildren = true;
-    	giftBasicEmitter.makeParticles('gift-basic');
-		giftBasicEmitter.setAll('data', {'basePoints': 100});
-		giftBasicEmitter.callAll('events.onInputDown.add', 'events.onInputDown', function(gift) {
+		giftEmitters.basic = createGiftEmitter(game, 100, 'gift-basic', 100, function(gift) {
+			// When clicking on a gift, compute the score
+			// The score depends on the base points & gift scale
+			// Include gift.body.velocity.y in the formula ?
+			var scoreIncrement = Math.round(gift.data.basePoints / Math.pow(gift.scale.x, 2)); 
+			updateScore(scoreIncrement);
+			gift.kill();
+		});
+		giftEmitters.basic.flow(10000, 1000, 2, -1);
+
+		giftEmitters.freeze = createGiftEmitter(game, 10, 'gift-freeze', 0, function(gift) {
+			// TODO freeze all the emitters (stop emitting new gift, stop the existing gifts, maybe by stopping gravity ...)
+			gift.kill();
+		});
+		giftEmitters.freeze.flow(10000, 5000, 1, -1);
+
+/*
+		game.add.emitter(game.world.centerX, 0, 100);
+		giftEmitters.basic.setSize(game.world.width, 0);
+		giftEmitters.basic.inputEnableChildren = true;
+    	giftEmitters.basic.makeParticles('gift-basic');
+		giftEmitters.basic.setAll('data', {'basePoints': 100});
+		giftEmitters.basic.callAll('events.onInputDown.add', 'events.onInputDown', function(gift) {
 			// When clicking on a gift, compute the score
 			// The score depends on the base points & gift scale
 			var scoreIncrement = Math.round(gift.data.basePoints / Math.pow(gift.scale.x, 2)); // include gift.body.velocity.y in the formula ?
 			updateScore(scoreIncrement);
 			gift.kill();
 		});
-    	giftBasicEmitter.minParticleScale = 0.5;
-    	giftBasicEmitter.maxParticleScale = 1;
-    	giftBasicEmitter.minRotation = -45;
-		giftBasicEmitter.maxRotation = 45;
-		giftBasicEmitter.setXSpeed(-5, 5);
-		giftBasicEmitter.flow(10000, 1000, 2, -1);
+    	giftEmitters.basic.minParticleScale = 0.5;
+    	giftEmitters.basic.maxParticleScale = 1;
+    	giftEmitters.basic.minRotation = -45;
+		giftEmitters.basic.maxRotation = 45;
+		giftEmitters.basic.setXSpeed(-5, 5);
+		giftEmitters.basic.flow(10000, 1000, 2, -1);
 
 
+*/
  	}
 
 	/**
