@@ -183,4 +183,38 @@
 
  	}
 
+
+ 	//Timer
+
+ 	var timer;
+	var total = 0;
+
+	function create() {
+
+    	//game.stage.backgroundColor = '#000';
+
+   	 	//  Create our Timer
+    	timer = game.time.create(false);
+
+    	//  Set a TimerEvent to occur after 1 seconds
+    	timer.loop(1000, updateCounter, this);
+
+    	//  Start the timer running - this is important!
+    	//  It won't start automatically, allowing you to hook it to button events and the like.
+    	timer.start();
+
+	}
+
+	function updateCounter() {
+
+	    total++;
+
+	}
+
+	function render() {
+
+    	game.debug.text('time: ' + timer.duration.toFixed(0), 32, 32);
+    	game.debug.text('clock: ' + total, 32, 64);
+
+	}
  }
