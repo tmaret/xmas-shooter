@@ -186,6 +186,8 @@
 
  	//Timer
  	
+ 	var game = new Phaser.Game(800, 600, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, render: render });
+
  	function preload() {
 
     game.load.image('picture7', 'assets/pics/slayer-sorry_im_the_beast.png');
