@@ -27,6 +27,10 @@
 
 	var scoreMultiplicator = 1;
 	var scoreMultiplicatorEndTime = 0;
+	
+	var game.physics.arcade.gravity.y = 150;
+	.
+	var game.physics.arcade.gravity.yEndTime = 0;
 
  	var screenWidth = 800, screenHeight = 600, worldWidth = 1.25 * screenWidth;
  	var game = new Phaser.Game(/*width*/screenWidth, /*height*/screenHeight, /*render*/Phaser.AUTO, /*parent*/'',
@@ -127,7 +131,11 @@
 		// Create an emitter for the freeze gifts
 
 		giftEmitters.freeze = createGiftEmitter(game, 10, 'gift-freeze', 0, function(gift) {
+			var scoreIncrement = Math.round(gift.data.basePoints / Math.pow(gift.scale.x, 2));
 			// TODO freeze all the emitters (stop emitting new gift, stop the existing gifts, maybe by stopping gravity ...)
+			game.physics.arcade.gravity.y = 0;
+			game.physics.arcade.gravity.yEndTime = game.time.time + 5000;
+			updateScore(scoreIncrement);
 			gift.kill();
 		});
 		giftEmitters.freeze.flow(/* lifespan in ms */ 10000, /* frequency in ms */ 5000, /* quantity */ 1, /* total */ -1, /* immediate */ false);
@@ -181,48 +189,52 @@
  			updateScore(0);
  		}
 
+ 		if (game.physics.arcade.gravity.yEndTime <game.time.time) {
+ 			game.physics.arcade.gravity.y = 150
+ 			updateScore(0);
+ 		}
  	}
 
 
  	//Timer
- 	
- 	var game = new Phaser.Game(800, 600, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, render: render });
 
- 	function preload() {
+ 	//var game = new Phaser.Game(800, 600, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, render: render });
 
-    game.load.image('picture7', 'assets/pics/slayer-sorry_im_the_beast.png');
+ 	//function preload() {
 
-	}
+    //game.load.image('picture7', 'assets/pics/slayer-sorry_im_the_beast.png');
 
- 	var timer;
-	var total = 0;
+	//}
 
-	function create() {
+ 	//var timer;
+	//var total = 0;
+
+	//function create() {
 
     	//game.stage.backgroundColor = '#000';
 
    	 	//  Create our Timer
-    	timer = game.time.create(false);
+    //	timer = game.time.create(false);
 
     	//  Set a TimerEvent to occur after 1 seconds
-    	timer.loop(1000, updateCounter, this);
+    //	timer.loop(1000, updateCounter, this);
 
     	//  Start the timer running - this is important!
     	//  It won't start automatically, allowing you to hook it to button events and the like.
-    	timer.start();
+    //	timer.start();
 
-	}
+	//}
 
-	function updateCounter() {
+	//function updateCounter() {
 
-	    total++;
+	 //   total++;
 
-	}
+	//}
 
-	function render() {
+	//function render() {
 
-    	game.debug.text('time: ' + timer.duration.toFixed(0), 32, 32);
-    	game.debug.text('clock: ' + total, 32, 64);
+    //	game.debug.text('time: ' + timer.duration.toFixed(0), 32, 32);
+    //	game.debug.text('clock: ' + total, 32, 64);
 
-	}
- }
+	//}
+ //}
