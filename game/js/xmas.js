@@ -19,6 +19,7 @@
  * @author timothee.maret@gmail.com
  */
  window.onload = function() {
+ 	
 
  	var giftEmitters = {};
 
@@ -27,10 +28,10 @@
 
 	var scoreMultiplicator = 1;
 	var scoreMultiplicatorEndTime = 0;
-	
-	var game.physics.arcade.gravity.y = 150;
-	.
-	var game.physics.arcade.gravity.yEndTime = 0;
+
+	var freezeEndTime = 0;
+
+
 
  	var screenWidth = 800, screenHeight = 600, worldWidth = 1.25 * screenWidth;
  	var game = new Phaser.Game(/*width*/screenWidth, /*height*/screenHeight, /*render*/Phaser.AUTO, /*parent*/'',
@@ -96,12 +97,14 @@
 	/**
      * Function called by Phaser once, when creating the game (after the preload method).
 	 */
- 	function create (game){
+	function create (game){
   		console.log("create");
  		setFullScreen(game);
 
  		game.physics.startSystem(Phaser.Physics.ARCADE);
- 		game.physics.arcade.gravity.y = 150;
+ 		var gravity = game.physics.arcade.gravity.y
+ 		gravity = 150;
+
  		game.world.setBounds(0, 0, worldWidth, screenHeight);
 
  		scoreText = game.add.text(10, 10, '', {font: '34px Arial', fill: '#FFF'} );
@@ -127,14 +130,15 @@
 			gift.kill();
 		});
 		giftEmitters.mushroom.flow(10000, 1200, 2, -1);
-
+		giftEmitters.mushroom.on = true;
 		// Create an emitter for the freeze gifts
 
 		giftEmitters.freeze = createGiftEmitter(game, 10, 'gift-freeze', 0, function(gift) {
 			var scoreIncrement = Math.round(gift.data.basePoints / Math.pow(gift.scale.x, 2));
 			// TODO freeze all the emitters (stop emitting new gift, stop the existing gifts, maybe by stopping gravity ...)
-			game.physics.arcade.gravity.y = 0;
-			game.physics.arcade.gravity.yEndTime = game.time.time + 5000;
+			giftEmitters.mushroom.on = false;
+			giftEmitters.freeze.on = false;
+			freezeEndTime = game.time.time + 50000;
 			updateScore(scoreIncrement);
 			gift.kill();
 		});
@@ -156,44 +160,48 @@
 		});
 		giftEmitters.double.flow(/* lifespan in ms */ 10000, /* frequency in ms */ 2000, /* quantity */ 1, /* total */ -1, /* immediate */ false);
 		giftEmitters.double.on = false;
-
-
-
- 	}
+	}
 
 	/**
-	 * Function called by Phaser everytime it computes a new state.
-	 * Ideally we don't use that function and use update instead.
-	 */
- 	function render (game){
+	* Function called by Phaser everytime it computes a new state.
+	* Ideally we don't use that function and use update instead.
+	*/
+	function render (game){
  	}
 
-	/**
-	 * Function called by Phaser everytime it computes a new state.
-	 * We put our game logic here.
-	 */
- 	function update (game){
+	
 
+	/**
+	* Function called by Phaser everytime it computes a new state.
+	* We put our game logic here.
+	*/
+	function update (game){
+ 		
  		// start the emitters depending on the score
- 		if (score > 1000) {
+ 		if (score > 10000) {
 			giftEmitters.freeze.on = true;
  		}
+		
 
- 		if (score > 2000) {
+		if (score > 1000) {
 			giftEmitters.double.on = true;
  		}
+		
 
- 		// update the multiplicator
+		// update the multiplicator
  		if (scoreMultiplicatorEndTime < game.time.time) {
  			scoreMultiplicator = 1;
  			updateScore(0);
  		}
+		
+		if (freezeEndTime < game.time.time) {
+			giftEmitters.mushroom.on = true;
+			giftEmitters.freeze.on = true;
+			updateScore(0)
+		}
+	}
 
- 		if (game.physics.arcade.gravity.yEndTime <game.time.time) {
- 			game.physics.arcade.gravity.y = 150
- 			updateScore(0);
- 		}
- 	}
+ 		
 
 
  	//Timer
@@ -237,4 +245,4 @@
     //	game.debug.text('clock: ' + total, 32, 64);
 
 	//}
- //}
+ }
