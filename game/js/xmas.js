@@ -32,12 +32,15 @@
 	var life = 3;
 	var lifeText;
 
+	var remainingTime = 120; /* in seconds */
+	var remainingTimeText;
+	var timer;
+
 	var freezeEndTime = 0;
+
 	var blurEndTime = 0;
 	var blurX;
 	var blurY;
-
-
 
 	var endGame = false;
 
@@ -79,14 +82,26 @@
  		}
  	}
 
- 	function gameover(){
- 		endGame = true;
- 		//turn off emmitters
+ 	function updateRemainingTime(increment) {
+ 		remainingTime += increment;
+ 		remainingTimeText.text = 'Time : ' + remainingTime + ' sec';
+ 		if (remainingTime == 0) {
+ 			gameover();
+ 		}
+ 	}
+
+
+ 	function stopEmitters() {
  		for(var emitter in giftEmitters ){
  			if(giftEmitters.hasOwnProperty(emitter)){
  				giftEmitters[emitter].on = false;
  			}
  		}
+ 	}
+
+ 	function gameover(){
+ 		endGame = true;
+ 		stopEmitters();
 
  		//update scoreboard
  		lifeText.text = "";
@@ -94,36 +109,21 @@
  		scoreText.y = screenHeight/2;
  		var gameOver = game.add.sprite(screenWidth/5, screenHeight/4, 'gameover');
 
- 		
+ 		// stop timer
+ 		timer.stop();
  	}
 
- 	function blurEmitters(){
- 		for(var emitter in giftEmitters ){
- 			if(giftEmitters.hasOwnProperty(emitter)){
- 				giftEmitters[emitter].filters = [blurX, blurY];
- 			}
+ 	function blurEmitter(emitter){
+ 		if (emitter.blured == false) {
+	 		emitter.blured = true;
+ 			emitter.filters = [blurX, blurY];
  		}
  	}
 
- 	function unBlurEmitters(){
- 		for(var emitter in giftEmitters ){
- 			if(giftEmitters.hasOwnProperty(emitter)){
- 				giftEmitters[emitter].filters = undefined;
- 			}
- 		}
- 	}
-
- 	function startStopEmitters(){
- 		// Start or stop the emitters based on the current score and the emitter minScore
- 		for(var emitter in giftEmitters ){
- 			if(giftEmitters.hasOwnProperty(emitter)){
- 				var em = giftEmitters[emitter];
- 				if (score > em.minScore) {
- 					em.on = true;
- 				} else {
- 					em.on = false;
- 				}
- 			}
+ 	function unBlurEmitter(emitter){
+ 		if (emitter.blured == true) {
+ 			emitter.blured = false;
+ 			emitter.filters = undefined; 			
  		}
  	}
 
@@ -141,6 +141,8 @@
 		emitter.maxRotation = 45;
 		emitter.setXSpeed(0, 0);
 		emitter.minScore = minScore;
+		emitter.blured = false;
+		emitter.freezed = false;
 		var immediate = (score > minScore);
 		emitter.flow(/* lifespan in ms */ 10000, /* frequency in ms */ frequency, /* quantity */ quantity, /* total */ -1, /* immediate */ immediate);
 		emitter.on = immediate;
@@ -182,8 +184,7 @@
  		setFullScreen(game);
 
  		game.physics.startSystem(Phaser.Physics.ARCADE);
- 		var gravity = game.physics.arcade.gravity.y
- 		gravity = 150;
+
 
  		game.world.setBounds(0, 0, worldWidth, screenHeight);
 
@@ -194,13 +195,13 @@
  		lifeText = game.add.text(640, 10, '', {font: '34px Arial', fill: '#FFF'} );
  		updateLife(0);
 
+
  		// blur filter config
 
  		blurX = game.add.filter('BlurX');
 		blurY = game.add.filter('BlurY');
-    	blurX.blur = 30;
-    	blurY.blur = 30;
-
+    	blurX.blur = 10;
+    	blurY.blur = 10;
 
 		// Create an emitter for the basic gifts
 
@@ -223,19 +224,16 @@
 
 		// Create an emitter for the freeze gifts
 
-		giftEmitters.freeze = createGiftEmitter(game, 1, 'gift-freeze', 0, 1000, 10000, 1, function(gift) {
+		giftEmitters.freeze = createGiftEmitter(game, 1, 'gift-freeze', 0, -1, 10000, 1, function(gift) {
 			var scoreIncrement = Math.round(gift.data.basePoints / Math.pow(gift.scale.x, 2));
-			// TODO freeze all the emitters (stop emitting new gift, stop the existing gifts, maybe by stopping gravity ...)
-			giftEmitters.mushroom.on = false;
-			giftEmitters.freeze.on = false;
-			freezeEndTime = game.time.time + 50000;
+			freezeEndTime = game.time.time + 5000;
 			updateScore(scoreIncrement);
 			gift.kill();
 		});
 
 		// Create an emitter for the double gifts
 
-		giftEmitters.double = createGiftEmitter(game, 1, 'gift-double', 400, 1000, 2000, 1, function(gift) {
+		giftEmitters.double = createGiftEmitter(game, 1, 'gift-double', 400, -1, 2000, 1, function(gift) {
 			var scoreIncrement = Math.round(gift.data.basePoints / Math.pow(gift.scale.x, 2));
 			scoreMultiplicator = 2;
 			scoreMultiplicatorEndTime = game.time.time + 10000;
@@ -256,12 +254,21 @@
 
 		giftEmitters.blur = createGiftEmitter(game, 150, 'gift-ink', 0, -1, 1000, 2, function(gift) {
 			var scoreIncrement = Math.round(gift.data.basePoints / Math.pow(gift.scale.x, 2));
-			blurEmitters();
 			blurEndTime = game.time.time + 5000;
 			updateScore(scoreIncrement);
 			gift.kill();
 		});
 		
+
+		// Create timer and time text
+    	
+    	timer = game.time.create(false);
+    	timer.loop(1000, function() {
+    		updateRemainingTime(-1);
+    	}, this);
+    	remainingTimeText = game.add.text(640, 40, '', {font: '34px Arial', fill: '#FFF'} );
+    	updateRemainingTime(0);
+    	timer.start();
 
 
 	}
@@ -282,72 +289,47 @@
 	function update (game){
  		
  		if(endGame == false){
- 			
 
- 			startStopEmitters();
-		
+
+ 			// Manage the emitters state
+
+	 		for(var emitter in giftEmitters){
+	 			if(giftEmitters.hasOwnProperty(emitter)){
+
+					var em = giftEmitters[emitter];
+
+					// Start or stop the emitters based on 
+					// - minScore
+					// - game.physics.arcade.isPaused (frozen)
+
+	 				em.on = (score > em.minScore) && (game.physics.arcade.isPaused == false);
+
+	 				// Blur or unblur the emitter based on the blurEndTime
+
+	 				if (blurEndTime < game.time.time) {
+	 					unBlurEmitter(em);
+	 				} else {
+	 					blurEmitter(em);
+	 				}
+
+
+	 				// Freeze
+
+	 				if (freezeEndTime < game.time.time) {
+	 					game.physics.arcade.isPaused = false;
+	 				} else {
+						game.physics.arcade.isPaused = true;
+	 				}
+
+	 			}
+	 		}
+
 
 		    // update the multiplicator
  			if (scoreMultiplicatorEndTime < game.time.time) {
  				scoreMultiplicator = 1;
- 				updateScore(0);
+				updateScore(0);
  			}
-		
-			if (freezeEndTime < game.time.time) { 
-				giftEmitters.mushroom.on = true;
-				giftEmitters.freeze.on = true;
-				updateScore(0);
-			}
-
-			if (blurEndTime < game.time.time) { 
-				unBlurEmitters();
-				updateScore(0);
-			}
 		}
 	}
-
- 		
-
-
- 	//Timer
-
- 	//var game = new Phaser.Game(800, 600, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, render: render });
-
- 	//function preload() {
-
-    //game.load.image('picture7', 'assets/pics/slayer-sorry_im_the_beast.png');
-
-	//}
-
- 	//var timer;
-	//var total = 0;
-
-	////function create() {
-
-    	//game.stage.backgroundColor = '#000';
-
-   	 	//  Create our Timer
-    	//timer = game.time.create(false);
-
-    	//  Set a TimerEvent to occur after 1 seconds
-    	//timer.loop(1000, updateCounter, this);
-
-    	//  Start the timer running - this is important!
-    	//  It won't start automatically, allowing you to hook it to button events and the like.
-    	//timer.start();
-
-	//}
-
-	//function updateCounter() {
-
-	    //total++;
-
-	//}
-
-	//function render() {
-
-    	//game.debug.text('time: ' + timer.duration.toFixed(0), 32, 32);
-    	//game.debug.text('clock: ' + total, 32, 64);
-
-	//}
  }
