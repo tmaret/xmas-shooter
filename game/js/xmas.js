@@ -29,10 +29,11 @@
 	var scoreMultiplicator = 1;
 	var scoreMultiplicatorEndTime = 0;
 
-	var life = 3
+	var life = 3;
 	var lifeText;
 
 	var freezeEndTime = 0;
+	var endGame = false;
 
 
 
@@ -64,7 +65,30 @@
  		//life = life + increment;
  		life += increment;
  		lifeText.text = 'Life : ' + life;
+ 		if (life == 0) {
+ 			gameover();
+
+ 		}
  	}
+
+ 	function gameover(){
+ 		endGame = true;
+ 		//turn off emmitters
+ 		for(var emitter in giftEmitters ){
+ 			if(giftEmitters.hasOwnProperty(emitter)){
+ 				giftEmitters[emitter].on = false;
+ 			}
+ 		}
+
+ 		//update scoreboard
+ 		lifeText.text = "";
+ 		scoreText.x = screenWidth/2;
+ 		scoreText.y = screenHeight/2;
+ 		var gameOver = game.add.sprite(screenWidth/5, screenHeight/4, 'gameover');
+
+ 		
+ 	}
+
 
  	function createGiftEmitter(game, maxParticles, key, basePoints, onClick) {
  		var emitter = game.add.emitter(game.world.centerX, 0, maxParticles);
@@ -103,6 +127,7 @@
 		game.load.image('gift-thief', 'data/gift-thief.png');
 		game.load.image('gift-watch', 'data/gift-watch.png');
 		game.load.image('gift-bomb', 'data/gift-bomb.png');	
+		game.load.image('gameover', 'data/gameover.gif');
  	}
 
 	/**
@@ -137,6 +162,7 @@
 			gift.kill();
 		});
 		giftEmitters.basic.flow(10000, 1000, 2, -1);
+		giftEmitters.basic.on = true;
 
 		// Create an emitter for the mushroom gifts
 
@@ -205,27 +231,29 @@
 	*/
 	function update (game){
  		
- 		// start the emitters depending on the score
- 		if (score > 1000) {
-			giftEmitters.freeze.on = true;
- 		}
+ 		if(endGame == false){
+ 			// start the emitters depending on the score
+ 			if (score > 1000) {
+				giftEmitters.freeze.on = true;
+ 			}
 		
-
-		if (score > 1000) {
-			giftEmitters.double.on = true;
- 		}
+	
+			if (score > 1000) {
+				giftEmitters.double.on = true;
+ 			}
 		
 
 		// update the multiplicator
- 		if (scoreMultiplicatorEndTime < game.time.time) {
- 			scoreMultiplicator = 1;
- 			updateScore(0);
- 		}
+ 			if (scoreMultiplicatorEndTime < game.time.time) {
+ 				scoreMultiplicator = 1;
+ 				updateScore(0);
+ 			}
 		
-		if (freezeEndTime < game.time.time) {
-			giftEmitters.mushroom.on = true;
-			giftEmitters.freeze.on = true;
-			updateScore(0)
+			if (freezeEndTime < game.time.time) {
+				giftEmitters.mushroom.on = true;
+				giftEmitters.freeze.on = true;
+				updateScore(0)
+			}
 		}
 	}
 
