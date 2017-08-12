@@ -33,7 +33,15 @@
 	var lifeText;
 
 	var freezeEndTime = 0;
+	var blurEndTime = 0;
+	var blurX;
+	var blurY;
+
+
+
 	var endGame = false;
+
+
 
 
 
@@ -89,6 +97,22 @@
  		
  	}
 
+ 	function blurEmitters(){
+ 		for(var emitter in giftEmitters ){
+ 			if(giftEmitters.hasOwnProperty(emitter)){
+ 				giftEmitters[emitter].filters = [blurX, blurY];
+ 			}
+ 		}
+ 	}
+
+ 	function unBlurEmitters(){
+ 		for(var emitter in giftEmitters ){
+ 			if(giftEmitters.hasOwnProperty(emitter)){
+ 				giftEmitters[emitter].filters = undefined;
+ 			}
+ 		}
+ 	}
+
 
  	function createGiftEmitter(game, maxParticles, key, basePoints, onClick) {
  		var emitter = game.add.emitter(game.world.centerX, 0, maxParticles);
@@ -128,6 +152,8 @@
 		game.load.image('gift-watch', 'data/gift-watch.png');
 		game.load.image('gift-bomb', 'data/gift-bomb.png');	
 		game.load.image('gameover', 'data/gameover.gif');
+		game.load.script('BlurX', 'https://cdn.rawgit.com/photonstorm/phaser/master/v2/filters/BlurX.js');
+    	game.load.script('BlurY', 'https://cdn.rawgit.com/photonstorm/phaser/master/v2/filters/BlurY.js');
  	}
 
 	/**
@@ -149,6 +175,13 @@
 
  		lifeText = game.add.text(640, 10, '', {font: '34px Arial', fill: '#FFF'} );
  		updateLife(0);
+
+ 		//blur filter config
+
+ 		blurX = game.add.filter('BlurX');
+		blurY = game.add.filter('BlurY');
+    	blurX.blur = 30;
+    	blurY.blur = 30;
 
 
 		// Create an emitter for the basic gifts
@@ -211,6 +244,18 @@
 		
 		giftEmitters.bomb.flow(/* lifespan in ms */ 10000, /* frequency in ms */ 10000, /* quantity */ 1, /* total */ -1);
 		giftEmitters.bomb.on = true;
+
+		//gift emitter blur
+
+		giftEmitters.blur = createGiftEmitter(game, 150, 'gift-ink', 0, function(gift) {
+			var scoreIncrement = Math.round(gift.data.basePoints / Math.pow(gift.scale.x, 2));
+			blurEmitters();
+			blurEndTime = game.time.time + 5000;
+			updateScore(scoreIncrement);
+			gift.kill();
+
+		});
+		giftEmitters.blur.flow(/* lifespan in ms */ 10000, /* frequency in ms */ 1000, /* quantity */ 2, /* total */ -1, /* immediate */ true);
 		
 
 
@@ -243,16 +288,21 @@
  			}
 		
 
-		// update the multiplicator
+		    // update the multiplicator
  			if (scoreMultiplicatorEndTime < game.time.time) {
  				scoreMultiplicator = 1;
  				updateScore(0);
  			}
 		
-			if (freezeEndTime < game.time.time) {
+			if (freezeEndTime < game.time.time) { 
 				giftEmitters.mushroom.on = true;
 				giftEmitters.freeze.on = true;
-				updateScore(0)
+				updateScore(0);
+			}
+
+			if (blurEndTime < game.time.time) { 
+				unBlurEmitters();
+				updateScore(0);
 			}
 		}
 	}
