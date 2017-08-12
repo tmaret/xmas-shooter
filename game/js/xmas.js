@@ -29,6 +29,9 @@
 	var scoreMultiplicator = 1;
 	var scoreMultiplicatorEndTime = 0;
 
+	var life = 3
+	var lifeText;
+
 	var freezeEndTime = 0;
 
 
@@ -53,6 +56,14 @@
  		if (scoreMultiplicator !== 1) {
  			scoreText.text +=  ' (x' + scoreMultiplicator + ')';
  		}
+
+ 	}
+
+
+ 	function updateLife(increment){
+ 		//life = life + increment;
+ 		life += increment;
+ 		lifeText.text = 'Life : ' + life;
  	}
 
  	function createGiftEmitter(game, maxParticles, key, basePoints, onClick) {
@@ -66,7 +77,7 @@
     	emitter.maxParticleScale = 1;
     	emitter.minRotation = -45;
 		emitter.maxRotation = 45;
-		emitter.setXSpeed(-5, 5);
+		emitter.setXSpeed(0, 0);
 		return emitter;
  	}
 
@@ -110,9 +121,14 @@
  		scoreText = game.add.text(10, 10, '', {font: '34px Arial', fill: '#FFF'} );
  		updateScore(0);
 
+
+ 		lifeText = game.add.text(640, 10, '', {font: '34px Arial', fill: '#FFF'} );
+ 		updateLife(0);
+
+
 		// Create an emitter for the basic gifts
 
-		giftEmitters.basic = createGiftEmitter(game, 100, 'gift-basic', 100, function(gift) {
+		giftEmitters.basic = createGiftEmitter(game, 100, 'gift-basic', 50, function(gift) {
 			// When clicking on a gift, compute the score
 			// The score depends on the base points & gift scale
 			// Include gift.body.velocity.y in the formula ?
@@ -124,16 +140,17 @@
 
 		// Create an emitter for the mushroom gifts
 
-		giftEmitters.mushroom = createGiftEmitter(game, 100, 'gift-mushroom', -50, function(gift) {
+		giftEmitters.mushroom = createGiftEmitter(game, 120, 'gift-mushroom', -50, function(gift) {
 			var scoreIncrement = Math.round(gift.data.basePoints / Math.pow(gift.scale.x, 2)); 
 			updateScore(scoreIncrement);
 			gift.kill();
 		});
 		giftEmitters.mushroom.flow(10000, 1200, 2, -1);
 		giftEmitters.mushroom.on = true;
+
 		// Create an emitter for the freeze gifts
 
-		giftEmitters.freeze = createGiftEmitter(game, 10, 'gift-freeze', 0, function(gift) {
+		giftEmitters.freeze = createGiftEmitter(game, 1, 'gift-freeze', 0, function(gift) {
 			var scoreIncrement = Math.round(gift.data.basePoints / Math.pow(gift.scale.x, 2));
 			// TODO freeze all the emitters (stop emitting new gift, stop the existing gifts, maybe by stopping gravity ...)
 			giftEmitters.mushroom.on = false;
@@ -142,16 +159,12 @@
 			updateScore(scoreIncrement);
 			gift.kill();
 		});
-		giftEmitters.freeze.flow(/* lifespan in ms */ 10000, /* frequency in ms */ 5000, /* quantity */ 1, /* total */ -1, /* immediate */ false);
+		giftEmitters.freeze.flow(/* lifespan in ms */ 10000, /* frequency in ms */ 10000, /* quantity */ 1, /* total */ -1, /* immediate */ false);
 		giftEmitters.freeze.on = false;
-
-
-
 
 		// Create an emitter for the double gifts
 
-
-		giftEmitters.double = createGiftEmitter(game, 1, 'gift-double', 200, function(gift) {
+		giftEmitters.double = createGiftEmitter(game, 1, 'gift-double', 400, function(gift) {
 			var scoreIncrement = Math.round(gift.data.basePoints / Math.pow(gift.scale.x, 2));
 			scoreMultiplicator = 2;
 			scoreMultiplicatorEndTime = game.time.time + 10000;
@@ -160,6 +173,21 @@
 		});
 		giftEmitters.double.flow(/* lifespan in ms */ 10000, /* frequency in ms */ 2000, /* quantity */ 1, /* total */ -1, /* immediate */ false);
 		giftEmitters.double.on = false;
+
+        //Create gift emmitter bomb
+
+		giftEmitters.bomb = createGiftEmitter(game, 10, 'gift-bomb', -500, function(gift) {
+			var scoreIncrement = Math.round(gift.data.basePoints / Math.pow(gift.scale.x, 2)); 
+			updateScore(scoreIncrement);
+			updateLife(-1);
+			gift.kill();
+		});
+		
+		giftEmitters.bomb.flow(/* lifespan in ms */ 10000, /* frequency in ms */ 10000, /* quantity */ 1, /* total */ -1);
+		giftEmitters.bomb.on = true;
+		
+
+
 	}
 
 	/**
@@ -178,7 +206,7 @@
 	function update (game){
  		
  		// start the emitters depending on the score
- 		if (score > 10000) {
+ 		if (score > 1000) {
 			giftEmitters.freeze.on = true;
  		}
 		
@@ -217,32 +245,32 @@
  	//var timer;
 	//var total = 0;
 
-	//function create() {
+	////function create() {
 
     	//game.stage.backgroundColor = '#000';
 
    	 	//  Create our Timer
-    //	timer = game.time.create(false);
+    	//timer = game.time.create(false);
 
     	//  Set a TimerEvent to occur after 1 seconds
-    //	timer.loop(1000, updateCounter, this);
+    	//timer.loop(1000, updateCounter, this);
 
     	//  Start the timer running - this is important!
     	//  It won't start automatically, allowing you to hook it to button events and the like.
-    //	timer.start();
+    	//timer.start();
 
 	//}
 
 	//function updateCounter() {
 
-	 //   total++;
+	    //total++;
 
 	//}
 
 	//function render() {
 
-    //	game.debug.text('time: ' + timer.duration.toFixed(0), 32, 32);
-    //	game.debug.text('clock: ' + total, 32, 64);
+    	//game.debug.text('time: ' + timer.duration.toFixed(0), 32, 32);
+    	//game.debug.text('clock: ' + total, 32, 64);
 
 	//}
  }
