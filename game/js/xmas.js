@@ -113,8 +113,22 @@
  		}
  	}
 
+ 	function startStopEmitters(){
+ 		// Start or stop the emitters based on the current score and the emitter minScore
+ 		for(var emitter in giftEmitters ){
+ 			if(giftEmitters.hasOwnProperty(emitter)){
+ 				var em = giftEmitters[emitter];
+ 				if (score > em.minScore) {
+ 					em.on = true;
+ 				} else {
+ 					em.on = false;
+ 				}
+ 			}
+ 		}
+ 	}
 
- 	function createGiftEmitter(game, maxParticles, key, basePoints, onClick) {
+
+ 	function createGiftEmitter(game, maxParticles, key, basePoints, minScore, frequency, quantity, onClick) {
  		var emitter = game.add.emitter(game.world.centerX, 0, maxParticles);
 		emitter.setSize(game.world.width, 0);
 		emitter.inputEnableChildren = true;
@@ -126,6 +140,10 @@
     	emitter.minRotation = -45;
 		emitter.maxRotation = 45;
 		emitter.setXSpeed(0, 0);
+		emitter.minScore = minScore;
+		var immediate = (score > minScore);
+		emitter.flow(/* lifespan in ms */ 10000, /* frequency in ms */ frequency, /* quantity */ quantity, /* total */ -1, /* immediate */ immediate);
+		emitter.on = immediate;
 		return emitter;
  	}
 
@@ -176,7 +194,7 @@
  		lifeText = game.add.text(640, 10, '', {font: '34px Arial', fill: '#FFF'} );
  		updateLife(0);
 
- 		//blur filter config
+ 		// blur filter config
 
  		blurX = game.add.filter('BlurX');
 		blurY = game.add.filter('BlurY');
@@ -186,7 +204,7 @@
 
 		// Create an emitter for the basic gifts
 
-		giftEmitters.basic = createGiftEmitter(game, 100, 'gift-basic', 50, function(gift) {
+		giftEmitters.basic = createGiftEmitter(game, 100, 'gift-basic', 50, -1, 1000, 2, function(gift) {
 			// When clicking on a gift, compute the score
 			// The score depends on the base points & gift scale
 			// Include gift.body.velocity.y in the formula ?
@@ -194,22 +212,18 @@
 			updateScore(scoreIncrement);
 			gift.kill();
 		});
-		giftEmitters.basic.flow(10000, 1000, 2, -1);
-		giftEmitters.basic.on = true;
 
 		// Create an emitter for the mushroom gifts
 
-		giftEmitters.mushroom = createGiftEmitter(game, 120, 'gift-mushroom', -50, function(gift) {
+		giftEmitters.mushroom = createGiftEmitter(game, 120, 'gift-mushroom', -50, -1, 1200, 2, function(gift) {
 			var scoreIncrement = Math.round(gift.data.basePoints / Math.pow(gift.scale.x, 2)); 
 			updateScore(scoreIncrement);
 			gift.kill();
 		});
-		giftEmitters.mushroom.flow(10000, 1200, 2, -1);
-		giftEmitters.mushroom.on = true;
 
 		// Create an emitter for the freeze gifts
 
-		giftEmitters.freeze = createGiftEmitter(game, 1, 'gift-freeze', 0, function(gift) {
+		giftEmitters.freeze = createGiftEmitter(game, 1, 'gift-freeze', 0, 1000, 10000, 1, function(gift) {
 			var scoreIncrement = Math.round(gift.data.basePoints / Math.pow(gift.scale.x, 2));
 			// TODO freeze all the emitters (stop emitting new gift, stop the existing gifts, maybe by stopping gravity ...)
 			giftEmitters.mushroom.on = false;
@@ -218,74 +232,59 @@
 			updateScore(scoreIncrement);
 			gift.kill();
 		});
-		giftEmitters.freeze.flow(/* lifespan in ms */ 10000, /* frequency in ms */ 10000, /* quantity */ 1, /* total */ -1, /* immediate */ false);
-		giftEmitters.freeze.on = false;
 
 		// Create an emitter for the double gifts
 
-		giftEmitters.double = createGiftEmitter(game, 1, 'gift-double', 400, function(gift) {
+		giftEmitters.double = createGiftEmitter(game, 1, 'gift-double', 400, 1000, 2000, 1, function(gift) {
 			var scoreIncrement = Math.round(gift.data.basePoints / Math.pow(gift.scale.x, 2));
 			scoreMultiplicator = 2;
 			scoreMultiplicatorEndTime = game.time.time + 10000;
 			updateScore(scoreIncrement);
 			gift.kill();
 		});
-		giftEmitters.double.flow(/* lifespan in ms */ 10000, /* frequency in ms */ 2000, /* quantity */ 1, /* total */ -1, /* immediate */ false);
-		giftEmitters.double.on = false;
 
-        //Create gift emmitter bomb
+        // Create gift emmitter bomb gifta
 
-		giftEmitters.bomb = createGiftEmitter(game, 10, 'gift-bomb', -500, function(gift) {
+		giftEmitters.bomb = createGiftEmitter(game, 10, 'gift-bomb', -500, -1, 10000, 1, function(gift) {
 			var scoreIncrement = Math.round(gift.data.basePoints / Math.pow(gift.scale.x, 2)); 
 			updateScore(scoreIncrement);
 			updateLife(-1);
 			gift.kill();
 		});
 		
-		giftEmitters.bomb.flow(/* lifespan in ms */ 10000, /* frequency in ms */ 10000, /* quantity */ 1, /* total */ -1);
-		giftEmitters.bomb.on = true;
+		// Create an emitter for the blur gifts
 
-		//gift emitter blur
-
-		giftEmitters.blur = createGiftEmitter(game, 150, 'gift-ink', 0, function(gift) {
+		giftEmitters.blur = createGiftEmitter(game, 150, 'gift-ink', 0, -1, 1000, 2, function(gift) {
 			var scoreIncrement = Math.round(gift.data.basePoints / Math.pow(gift.scale.x, 2));
 			blurEmitters();
 			blurEndTime = game.time.time + 5000;
 			updateScore(scoreIncrement);
 			gift.kill();
-
 		});
-		giftEmitters.blur.flow(/* lifespan in ms */ 10000, /* frequency in ms */ 1000, /* quantity */ 2, /* total */ -1, /* immediate */ true);
 		
 
 
 	}
 
 	/**
-	* Function called by Phaser everytime it computes a new state.
-	* Ideally we don't use that function and use update instead.
-	*/
+	 * Function called by Phaser everytime it computes a new state.
+	 * Ideally we don't use that function and use update instead.
+	 */
 	function render (game){
  	}
 
 	
 
 	/**
-	* Function called by Phaser everytime it computes a new state.
-	* We put our game logic here.
-	*/
+	 * Function called by Phaser everytime it computes a new state.
+	 * We put our game logic here.
+	 */
 	function update (game){
  		
  		if(endGame == false){
- 			// start the emitters depending on the score
- 			if (score > 1000) {
-				giftEmitters.freeze.on = true;
- 			}
-		
-	
-			if (score > 1000) {
-				giftEmitters.double.on = true;
- 			}
+ 			
+
+ 			startStopEmitters();
 		
 
 		    // update the multiplicator
