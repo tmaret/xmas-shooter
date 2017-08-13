@@ -47,6 +47,8 @@
 
 	var compassEndTime = 0;
 
+	var speedupEndTime = 0;
+
 
  	var screenWidth = 800, screenHeight = 600, worldWidth = 1.25 * screenWidth;
  	var game = new Phaser.Game(/*width*/screenWidth, /*height*/screenHeight, /*render*/Phaser.AUTO, /*parent*/'',
@@ -97,14 +99,21 @@
  		}
  	}
 
- 	function setRandomGravity() {
+ 	function setRandomGravityInX() {
  		var x = getRandomInt(-1000, 1000);
  		game.physics.arcade.gravity.x = x;
  	}
 
- 	function setDefaultGravity() {
+ 	function setDefaultGravityInX() {
  		game.physics.arcade.gravity.x = 0;
- 		game.physics.arcade.gravity.y = 10;
+ 	}
+
+ 	function setStrongGravityInY() {
+ 		game.physics.arcade.gravity.y = 500;
+ 	}
+
+ 	function setDefaultGravityInY() {
+ 		 game.physics.arcade.gravity.y = 10;
  	}
 
 
@@ -201,7 +210,8 @@
  		setFullScreen(game);
 
  		game.physics.startSystem(Phaser.Physics.ARCADE);
- 		setDefaultGravity();
+ 		setDefaultGravityInX();
+ 		setDefaultGravityInY();
 
 
  		game.world.setBounds(0, 0, worldWidth, screenHeight);
@@ -219,6 +229,15 @@
 		blurY = game.add.filter('BlurY');
     	blurX.blur = 10;
     	blurY.blur = 10;
+
+		// Create an emitter for the compass gifts
+
+		giftEmitters.compass = createGiftEmitter(game, 100, 'gift-speedup', 50, -1, 1000, 2, function(gift) {
+			var scoreIncrement = Math.round(gift.data.basePoints / Math.pow(gift.scale.x, 2)); 
+			speedupEndTime = game.time.time + 5000;
+			updateScore(scoreIncrement);
+			gift.kill();
+		});
 
     	// Create an emitter for the compass gifts
 
@@ -330,12 +349,20 @@
 
 	 				em.on = (score > em.minScore) && (game.physics.arcade.isPaused == false);
 
-	 				// TODO
+	 				// Set strong or default Y axis gravity
+
+	 				if (speedupEndTime < game.time.time) {
+	 					setDefaultGravityInY();
+	 				} else {
+	 					setStrongGravityInY();
+	 				}
+
+	 				// Set random or default X axis gravity
 
 	 				if (compassEndTime < game.time.time) {
-	 					setDefaultGravity();
+	 					setDefaultGravityInX();
 	 				} else {
-	 					setRandomGravity();
+	 					setRandomGravityInX();
 	 				}
 
 	 				// Blur or unblur the emitter based on the blurEndTime
