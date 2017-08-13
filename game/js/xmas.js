@@ -156,8 +156,59 @@ io.github.xmasshooter = (function () {
 
 
 	 		if(score < 1000){
-	 			game.add.text(10, 10, 'You have been a naughty child', {font: '34px Arial', fill: '#FFF'} );
+	 			game.add.text(100, 50, 'You have been a naughty child', {font: '34px Arial', fill: '#FFF'} );
 	 		}
+
+	 		if(1000 <= score && score < 2000){
+	 			game.add.text(100, 50, 'Mmmh you have forgotten to order', {font: '34px Arial', fill: '#FFF'} );
+	 			game.add.sprite(30, 30, 'giftstar1');
+	 		}
+
+	 		if(2000 <= score && score < 5000){
+	 			game.add.text(100, 50, 'Not too bad', {font: '34px Arial', fill: '#FFF'} );
+	 			game.add.sprite(30, 30, 'giftstar1');
+	 			game.add.sprite(30, 100, 'giftstar2');
+	 		}
+
+	 		if(5000 <= score && score < 10000){
+	 			game.add.text(100, 50, 'Oh a Christmas like the others', {font: '34px Arial', fill: '#FFF'} );
+	 			game.add.sprite(30, 30, 'giftstar1');
+	 			game.add.sprite(30, 100, 'giftstar2');
+	 			game.add.sprite(30, 170, 'giftstar3');
+	 		}
+
+	 		if(10000 <= score && score < 25000){
+	 			game.add.text(100, 50, 'What a generous Santa', {font: '34px Arial', fill: '#FFF'} );
+	 			game.add.sprite(30, 30, 'giftstar1');
+	 			game.add.sprite(30, 100, 'giftstar2');
+	 			game.add.sprite(30, 170, 'giftstar3');
+	 			game.add.sprite(30, 240, 'giftstar4');
+	 		}
+
+
+	 		if(25000 <= score && score < 100000){
+	 			game.add.text(100, 50, 'That is the best Christmas in my life', {font: '34px Arial', fill: '#FFF'} );
+	 			game.add.sprite(30, 30, 'giftstar1');
+	 			game.add.sprite(30, 100, 'giftstar2');
+	 			game.add.sprite(30, 170, 'giftstar3');
+	 			game.add.sprite(30, 240, 'giftstar4');
+	 			game.add.sprite(30, 310, 'giftstar5');
+	 		}
+
+	 		if(score > 100000){
+	 			game.add.text(100, 50, 'OMG ! You bought the Santa', {font: '34px Arial', fill: '#FFF'} );
+	 			game.add.sprite(30, 30, 'giftstar1');
+	 			game.add.sprite(30, 100, 'giftstar2');
+	 			game.add.sprite(30, 170, 'giftstar3');
+	 			game.add.sprite(30, 240, 'giftstar4');
+	 			game.add.sprite(30, 310, 'giftstar5');
+	 			game.add.sprite(400, 300, 'santa');
+	 		}
+
+
+
+
+
 	 	}
 
 	 	function blurEmitter(emitter){
@@ -291,7 +342,7 @@ io.github.xmasshooter = (function () {
 
 			// Create an emitter for the basic gifts
 
-			giftEmitters.basic = createGiftEmitter(game, 500, 'gift-basic', 50, -1, 250, 2, function(gift) {
+			giftEmitters.basic = createGiftEmitter(game, 500, 'gift-basic', 1000, -1, 250, 2, function(gift) {
 				// When clicking on a gift, compute the score
 				// The score depends on the base points & gift scale
 				// Include gift.body.velocity.y in the formula ?
@@ -338,7 +389,7 @@ io.github.xmasshooter = (function () {
 
 	     	// Create gift emmiter watch
 
-			giftEmitters.watch = createGiftEmitter(game, 10, 'gift-watch', -500, -1, 10100, 2, function(gift) {
+			giftEmitters.watch = createGiftEmitter(game, 10, 'gift-watch', 10, -1, 10100, 2, function(gift) {
 				var scoreIncrement = Math.round(gift.data.basePoints / Math.pow(gift.scale.x, 2)); 
 				updateScore(scoreIncrement);
 				updateRemainingTime(10);
@@ -347,7 +398,7 @@ io.github.xmasshooter = (function () {
 
 			// Create gift clock emitter
 
-			giftEmitters.clock = createGiftEmitter(game, 10, 'gift-clock', -500, -1, 8200, 2, function(gift) {
+			giftEmitters.clock = createGiftEmitter(game, 10, 'gift-clock', -20, -1, 8200, 2, function(gift) {
 				var scoreIncrement = Math.round(gift.data.basePoints / Math.pow(gift.scale.x, 2)); 
 				updateScore(scoreIncrement);
 				updateRemainingTime(-50);
