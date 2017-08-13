@@ -195,21 +195,21 @@ io.github.xmasshooter = (function () {
  	function preload (game){
  		console.log("preload");
  		game.load.crossOrigin = 'anonymous';
-		game.load.spritesheet('gift-parcel', resolveUrl('data/gift-parcel.png'), 65, 65, 3);
+		//game.load.spritesheet('gift-parcel', resolveUrl('data/gift-parcel.png'), 65, 65, 3);
 		game.load.image('gift-basic', resolveUrl('data/gift-basic.png'));
-		game.load.image('gift-candy', resolveUrl('data/gift-candy.png'));
+		//game.load.image('gift-candy', resolveUrl('data/gift-candy.png'));
 		game.load.image('gift-clock', resolveUrl('data/gift-clock.png'));
 		game.load.image('gift-compass', resolveUrl('data/gift-compass.png'));
 		game.load.image('gift-double', resolveUrl('data/gift-double.png'));
 		game.load.image('gift-freeze', resolveUrl('data/gift-freeze.png'));
 		game.load.image('gift-glasses', resolveUrl('data/gift-glasses.png'));
 		game.load.image('gift-ink', resolveUrl('data/gift-ink.png'));
-		game.load.image('gift-magnet', resolveUrl('data/gift-magnet.png'));
-		game.load.image('gift-pointer', resolveUrl('data/gift-pointer.png'));
+		//game.load.image('gift-magnet', resolveUrl('data/gift-magnet.png'));
+		//game.load.image('gift-pointer', resolveUrl('data/gift-pointer.png'));
 		game.load.image('gift-mushroom', resolveUrl('data/gift-mushroom.png'));
-		game.load.image('gift-potion', resolveUrl('data/gift-potion.png'));
+		//game.load.image('gift-potion', resolveUrl('data/gift-potion.png'));
 		game.load.image('gift-speedup', resolveUrl('data/gift-speedup.png'));
-		game.load.image('gift-thief', resolveUrl('data/gift-thief.png'));
+		//game.load.image('gift-thief', resolveUrl('data/gift-thief.png'));
 		game.load.image('gift-watch', resolveUrl('data/gift-watch.png'));
 		game.load.image('gift-bomb', resolveUrl('data/gift-bomb.png'));	
 		game.load.image('gameover', resolveUrl('data/gameover.gif'));
