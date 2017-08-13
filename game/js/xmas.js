@@ -62,6 +62,8 @@ io.github.xmasshooter = (function () {
 		var commentText;
 
 
+		var backgroundMusic;
+
 	 	var screenWidth = 800, screenHeight = 600, worldWidth = 1.25 * screenWidth;
 	 	var game = new Phaser.Game(/*width*/screenWidth, /*height*/screenHeight, /*render*/Phaser.AUTO, /*parent*/'',
 	 		/*state*/{preload: preload, create: create, render: render, update: update},
@@ -225,6 +227,10 @@ io.github.xmasshooter = (function () {
 	 		}
 	 	}
 
+	 	function decodedBackgroundMusic() {
+			backgroundMusic.loopFull();
+	 	}
+
 
 	 	function createGiftEmitter(game, maxParticles, key, basePoints, minScore, frequency, quantity, onClick) {
 	 		var emitter = game.add.emitter(game.world.centerX, 0, maxParticles);
@@ -253,21 +259,15 @@ io.github.xmasshooter = (function () {
 	 	function preload (game){
 	 		console.log("preload");
 	 		game.load.crossOrigin = 'anonymous';
-			//game.load.spritesheet('gift-parcel', resolveUrl('data/gift-parcel.png'), 65, 65, 3);
 			game.load.image('gift-basic', resolveUrl('data/gift-basic.png'));
-			//game.load.image('gift-candy', resolveUrl('data/gift-candy.png'));
 			game.load.image('gift-clock', resolveUrl('data/gift-clock.png'));
 			game.load.image('gift-compass', resolveUrl('data/gift-compass.png'));
 			game.load.image('gift-double', resolveUrl('data/gift-double.png'));
 			game.load.image('gift-freeze', resolveUrl('data/gift-freeze.png'));
 			game.load.image('gift-glasses', resolveUrl('data/gift-glasses.png'));
 			game.load.image('gift-ink', resolveUrl('data/gift-ink.png'));
-			//game.load.image('gift-magnet', resolveUrl('data/gift-magnet.png'));
-			//game.load.image('gift-pointer', resolveUrl('data/gift-pointer.png'));
 			game.load.image('gift-mushroom', resolveUrl('data/gift-mushroom.png'));
-			//game.load.image('gift-potion', resolveUrl('data/gift-potion.png'));
 			game.load.image('gift-speedup', resolveUrl('data/gift-speedup.png'));
-			//game.load.image('gift-thief', resolveUrl('data/gift-thief.png'));
 			game.load.image('gift-watch', resolveUrl('data/gift-watch.png'));
 			game.load.image('gift-bomb', resolveUrl('data/gift-bomb.png'));	
 			game.load.image('gameover', resolveUrl('data/gameover.gif'));
@@ -282,6 +282,8 @@ io.github.xmasshooter = (function () {
 			game.load.image('santa', resolveUrl('data/santa.png'));
 			game.load.script('BlurX', resolveUrl('filters/BlurX.js'));
 	    	game.load.script('BlurY', resolveUrl('filters/BlurY.js'));
+	    	game.load.audio('background-music', resolveUrl('data/LoveIsAChristmasRose_PineyGir.mp3'));
+
 	 	}
 
 		/**
@@ -311,6 +313,10 @@ io.github.xmasshooter = (function () {
 	 		lifeText = game.add.text(640, 10, '', {font: '34px Arial', fill: '#FFF'} );
 	 		updateLife(0);
 
+	 		// backougr music 
+
+			backgroundMusic = game.add.audio('background-music');
+			game.sound.setDecodedCallback(backgroundMusic, decodedBackgroundMusic, this);
 
 
 	 		// blur filter config
