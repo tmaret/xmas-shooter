@@ -243,8 +243,8 @@ io.github.xmasshooter = (function () {
 
  		blurX = game.add.filter('BlurX');
 		blurY = game.add.filter('BlurY');
-    	blurX.blur = 10;
-    	blurY.blur = 10;
+    	blurX.blur = 20;
+    	blurY.blur = 20;
 
 		// Create an emitter for the speedup gifts
 
