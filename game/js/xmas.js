@@ -194,6 +194,7 @@ io.github.xmasshooter = (function () {
      */
  	function preload (game){
  		console.log("preload");
+ 		game.load.crossOrigin = 'anonymous';
 		game.load.spritesheet('gift-parcel', resolveUrl('data/gift-parcel.png'), 65, 65, 3);
 		game.load.image('gift-basic', resolveUrl('data/gift-basic.png'));
 		game.load.image('gift-candy', resolveUrl('data/gift-candy.png'));
