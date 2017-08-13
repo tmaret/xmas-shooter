@@ -61,6 +61,8 @@ io.github.xmasshooter = (function () {
 		var comment = ''
 		var commentText;
 
+		var fx;
+
 
 		var backgroundMusic;
 
@@ -283,6 +285,7 @@ io.github.xmasshooter = (function () {
 			game.load.script('BlurX', resolveUrl('filters/BlurX.js'));
 	    	game.load.script('BlurY', resolveUrl('filters/BlurY.js'));
 	    	game.load.audio('background-music', resolveUrl('data/LoveIsAChristmasRose_PineyGir.mp3'));
+	    	game.load.audio('sfx', resolveUrl('data/fx_mixdown.ogg'));
 
 	 	}
 
@@ -317,6 +320,9 @@ io.github.xmasshooter = (function () {
 
 			backgroundMusic = game.add.audio('background-music');
 			game.sound.setDecodedCallback(backgroundMusic, decodedBackgroundMusic, this);
+			fx = game.add.audio('sfx');
+			fx.allowMultiple = true;
+			fx.addMarker('basic', 10, 1.0);
 
 
 	 		// blur filter config
@@ -353,6 +359,7 @@ io.github.xmasshooter = (function () {
 				// The score depends on the base points & gift scale
 				// Include gift.body.velocity.y in the formula ?
 				var scoreIncrement = Math.round(gift.data.basePoints / Math.pow(gift.scale.x, 2)); 
+				fx.play('basic');
 				updateScore(scoreIncrement);
 				gift.kill();
 			});
