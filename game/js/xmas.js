@@ -42,8 +42,10 @@
 	var blurX;
 	var blurY;
 
-	var endGame = false;
+	var splash;
+	var splashEndTime = 0;
 
+	var endGame = false;
 
 
 
@@ -172,6 +174,7 @@
 		game.load.image('gift-watch', 'data/gift-watch.png');
 		game.load.image('gift-bomb', 'data/gift-bomb.png');	
 		game.load.image('gameover', 'data/gameover.gif');
+		game.load.image('ink-splash', 'data/ink-splash.png');
 		game.load.script('BlurX', 'https://cdn.rawgit.com/photonstorm/phaser/master/v2/filters/BlurX.js');
     	game.load.script('BlurY', 'https://cdn.rawgit.com/photonstorm/phaser/master/v2/filters/BlurY.js');
  	}
@@ -203,6 +206,8 @@
     	blurX.blur = 10;
     	blurY.blur = 10;
 
+
+    	
 		// Create an emitter for the basic gifts
 
 		giftEmitters.basic = createGiftEmitter(game, 100, 'gift-basic', 50, -1, 1000, 2, function(gift) {
@@ -259,6 +264,20 @@
 			gift.kill();
 		});
 		
+		//ink gift emitter
+
+		giftEmitters.ink = createGiftEmitter(game, 150, 'gift-ink', 0, -1, 1000, 2, function(gift) {
+			var scoreIncrement = Math.round(gift.data.basePoints / Math.pow(gift.scale.x, 2));
+			splashEndTime = game.time.time + 5000;
+			updateScore(scoreIncrement);
+			gift.kill();
+		});
+
+
+		// Create splash sprite
+
+    	splash = game.add.sprite(screenWidth/5, screenHeight/4, 'ink-splash');
+    	splash.visible = false;
 
 		// Create timer and time text
     	
@@ -310,6 +329,14 @@
 	 					unBlurEmitter(em);
 	 				} else {
 	 					blurEmitter(em);
+	 				}
+
+	 				//slash end time
+
+	 				if (splashEndTime < game.time.time){
+	 					splash.visible = false;
+	 				} else {
+	 					splash.visible = true;
 	 				}
 
 
