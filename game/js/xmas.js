@@ -254,6 +254,16 @@
 			updateLife(-1);
 			gift.kill();
 		});
+
+     	//create gift emmiter watch
+
+
+		giftEmitters.watch = createGiftEmitter(game, 100, 'gift-watch', -500, -1, 1000, 2, function(gift) {
+			var scoreIncrement = Math.round(gift.data.basePoints / Math.pow(gift.scale.x, 2)); 
+			updateScore(scoreIncrement);
+			updateRemainingTime(10);
+			gift.kill();
+		});
 		
 		// Create an emitter for the glasses gifts
 
