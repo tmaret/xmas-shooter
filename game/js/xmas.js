@@ -45,14 +45,21 @@
 	var endGame = false;
 
 
-
+	var compassEndTime = 0;
 
 
  	var screenWidth = 800, screenHeight = 600, worldWidth = 1.25 * screenWidth;
  	var game = new Phaser.Game(/*width*/screenWidth, /*height*/screenHeight, /*render*/Phaser.AUTO, /*parent*/'',
  		/*state*/{preload: preload, create: create, render: render, update: update},
  		/*transparent*/ false, /*antialias*/false, /*physicsConfig*/null); 
- 
+
+
+ 	function getRandomInt(min, max) {
+		min = Math.ceil(min);
+	  	max = Math.floor(max);
+	  	return Math.floor(Math.random() * (max - min)) + min;
+	}
+
 
  	function setFullScreen (game){
 		game.scale.pageAlignHorizontally = true;
@@ -88,6 +95,16 @@
  		if (remainingTime == 0) {
  			gameover();
  		}
+ 	}
+
+ 	function setRandomGravity() {
+ 		var x = getRandomInt(-1000, 1000);
+ 		game.physics.arcade.gravity.x = x;
+ 	}
+
+ 	function setDefaultGravity() {
+ 		game.physics.arcade.gravity.x = 0;
+ 		game.physics.arcade.gravity.y = 10;
  	}
 
 
@@ -184,6 +201,7 @@
  		setFullScreen(game);
 
  		game.physics.startSystem(Phaser.Physics.ARCADE);
+ 		setDefaultGravity();
 
 
  		game.world.setBounds(0, 0, worldWidth, screenHeight);
@@ -195,13 +213,21 @@
  		lifeText = game.add.text(640, 10, '', {font: '34px Arial', fill: '#FFF'} );
  		updateLife(0);
 
-
  		// blur filter config
 
  		blurX = game.add.filter('BlurX');
 		blurY = game.add.filter('BlurY');
     	blurX.blur = 10;
     	blurY.blur = 10;
+
+    	// Create an emitter for the compass gifts
+
+		giftEmitters.compass = createGiftEmitter(game, 100, 'gift-compass', 50, -1, 1000, 2, function(gift) {
+			var scoreIncrement = Math.round(gift.data.basePoints / Math.pow(gift.scale.x, 2)); 
+			compassEndTime = game.time.time + 5000;
+			updateScore(scoreIncrement);
+			gift.kill();
+		});
 
 		// Create an emitter for the basic gifts
 
@@ -303,6 +329,14 @@
 					// - game.physics.arcade.isPaused (frozen)
 
 	 				em.on = (score > em.minScore) && (game.physics.arcade.isPaused == false);
+
+	 				// TODO
+
+	 				if (compassEndTime < game.time.time) {
+	 					setDefaultGravity();
+	 				} else {
+	 					setRandomGravity();
+	 				}
 
 	 				// Blur or unblur the emitter based on the blurEndTime
 
