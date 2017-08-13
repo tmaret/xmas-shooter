@@ -52,6 +52,7 @@
 	var speedupEndTime = 0;
 
 
+
  	var screenWidth = 800, screenHeight = 600, worldWidth = 1.25 * screenWidth;
  	var game = new Phaser.Game(/*width*/screenWidth, /*height*/screenHeight, /*render*/Phaser.AUTO, /*parent*/'',
  		/*state*/{preload: preload, create: create, render: render, update: update},
@@ -366,6 +367,8 @@
 	 * We put our game logic here.
 	 */
 	function update (game){
+
+		var gameTime = game.time.time;
  		
  		if(endGame == false){
 
@@ -385,7 +388,7 @@
 
 	 				// Set strong or default Y axis gravity
 
-	 				if (speedupEndTime < game.time.time) {
+	 				if (speedupEndTime < gameTime) {
 	 					setDefaultGravityInY();
 	 				} else {
 	 					setStrongGravityInY();
@@ -393,7 +396,7 @@
 
 	 				// Set random or default X axis gravity
 
-	 				if (compassEndTime < game.time.time) {
+	 				if (compassEndTime < gameTime) {
 	 					setDefaultGravityInX();
 	 				} else {
 	 					setRandomGravityInX();
@@ -401,7 +404,7 @@
 
 	 				// Blur or unblur the emitter based on the blurEndTime
 
-	 				if (blurEndTime < game.time.time) {
+	 				if (blurEndTime < gameTime) {
 	 					unBlurEmitter(em);
 	 				} else {
 	 					blurEmitter(em);
@@ -409,7 +412,7 @@
 
 	 				//slash end time
 
-	 				if (splashEndTime < game.time.time){
+	 				if (splashEndTime < gameTime){
 	 					splash.visible = false;
 	 				} else {
 	 					splash.visible = true;
@@ -418,7 +421,7 @@
 
 	 				// Freeze
 
-	 				if (freezeEndTime < game.time.time) {
+	 				if (freezeEndTime < gameTime) {
 	 					game.physics.arcade.isPaused = false;
 	 				} else {
 						game.physics.arcade.isPaused = true;
@@ -429,7 +432,7 @@
 
 
 		    // update the multiplicator
- 			if (scoreMultiplicatorEndTime < game.time.time) {
+ 			if (scoreMultiplicatorEndTime < gameTime) {
  				scoreMultiplicator = 1;
 				updateScore(0);
  			}
