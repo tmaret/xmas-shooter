@@ -395,10 +395,7 @@ io.github.xmasshooter = (function () {
 				endBackground.visible = true;
 			}
 
-
-	 		if(endGame == false){
-	 		
-
+			if (endGame == false) {
 
 	 			// Manage the emitters state
 
@@ -413,22 +410,6 @@ io.github.xmasshooter = (function () {
 
 		 				em.on = (score > em.minScore) && (game.physics.arcade.isPaused == false);
 
-		 				// Set strong or default Y axis gravity
-
-		 				if (speedupEndTime < gameTime) {
-		 					setDefaultGravityInY();
-		 				} else {
-		 					setStrongGravityInY();
-		 				}
-
-		 				// Set random or default X axis gravity
-
-		 				if (compassEndTime < gameTime) {
-		 					setDefaultGravityInX();
-		 				} else {
-		 					setRandomGravityInX();
-		 				}
-
 		 				// Blur or unblur the emitter based on the blurEndTime
 
 		 				if (blurEndTime < gameTime) {
@@ -436,34 +417,48 @@ io.github.xmasshooter = (function () {
 		 				} else {
 		 					blurEmitter(em);
 		 				}
-
-		 				//slash end time
-
-		 				if (splashEndTime < gameTime){
-		 					splash.visible = false;
-		 				} else {
-		 					splash.visible = true;
-		 				}
-
-
-		 				// Freeze
-
-		 				if (freezeEndTime < gameTime) {
-		 					game.physics.arcade.isPaused = false;
-		 				} else {
-							game.physics.arcade.isPaused = true;
-		 				}
-
 		 			}
 		 		}
+		 	}
 
+		 	//slash end time
 
-			    // update the multiplicator
-	 			if (scoreMultiplicatorEndTime < gameTime) {
-	 				scoreMultiplicator = 1;
-					updateScore(0);
-	 			}
-			}
+		 	if (splashEndTime < gameTime){
+		 		splash.visible = false;
+		 	} else {
+		 		splash.visible = true;
+		 	}
+
+		 	// Set random or default X axis gravity
+
+		 	if (compassEndTime < gameTime) {
+		 		setDefaultGravityInX();
+		 	} else {
+		 		setRandomGravityInX();
+		 	}
+
+		 	// Set strong or default Y axis gravity
+
+		 	if (speedupEndTime < gameTime) {
+		 		setDefaultGravityInY();
+		 	} else {
+		 		setStrongGravityInY();
+		 	}
+
+		 	// Freeze
+
+		 	if (freezeEndTime < gameTime) {
+		 		game.physics.arcade.isPaused = false;
+		 	} else {
+				game.physics.arcade.isPaused = true;
+		 	}
+
+			// update the multiplicator
+	 		
+	 		if (scoreMultiplicatorEndTime < gameTime) {
+	 			scoreMultiplicator = 1;
+				updateScore(0);
+	 		}
 		}
 	}
 
