@@ -257,7 +257,7 @@ io.github.xmasshooter = (function () {
 
 			// Create an emitter for the speedup gifts
 
-			giftEmitters.speedup = createGiftEmitter(game, 100, 'gift-speedup', 50, -1, 1000, 2, function(gift) {
+			giftEmitters.speedup = createGiftEmitter(game, 10, 'gift-speedup', 50, -1, 9000, 2, function(gift) {
 				var scoreIncrement = Math.round(gift.data.basePoints / Math.pow(gift.scale.x, 2)); 
 				speedupEndTime = game.time.time + 5000;
 				updateScore(scoreIncrement);
@@ -266,7 +266,7 @@ io.github.xmasshooter = (function () {
 
 	    	// Create an emitter for the compass gifts
 
-			giftEmitters.compass = createGiftEmitter(game, 100, 'gift-compass', 50, -1, 1000, 2, function(gift) {
+			giftEmitters.compass = createGiftEmitter(game, 10, 'gift-compass', 50, -1, 9500, 2, function(gift) {
 				var scoreIncrement = Math.round(gift.data.basePoints / Math.pow(gift.scale.x, 2)); 
 				compassEndTime = game.time.time + 5000;
 				updateScore(scoreIncrement);
@@ -275,7 +275,7 @@ io.github.xmasshooter = (function () {
 
 			// Create an emitter for the basic gifts
 
-			giftEmitters.basic = createGiftEmitter(game, 100, 'gift-basic', 50, -1, 1000, 2, function(gift) {
+			giftEmitters.basic = createGiftEmitter(game, 500, 'gift-basic', 50, -1, 250, 2, function(gift) {
 				// When clicking on a gift, compute the score
 				// The score depends on the base points & gift scale
 				// Include gift.body.velocity.y in the formula ?
@@ -286,7 +286,7 @@ io.github.xmasshooter = (function () {
 
 			// Create an emitter for the mushroom gifts
 
-			giftEmitters.mushroom = createGiftEmitter(game, 120, 'gift-mushroom', -50, -1, 1200, 2, function(gift) {
+			giftEmitters.mushroom = createGiftEmitter(game, 10, 'gift-mushroom', -50, -1, 8900, 2, function(gift) {
 				var scoreIncrement = Math.round(gift.data.basePoints / Math.pow(gift.scale.x, 2)); 
 				updateScore(scoreIncrement);
 				gift.kill();
@@ -294,7 +294,7 @@ io.github.xmasshooter = (function () {
 
 			// Create an emitter for the freeze gifts
 
-			giftEmitters.freeze = createGiftEmitter(game, 1, 'gift-freeze', 0, -1, 10000, 1, function(gift) {
+			giftEmitters.freeze = createGiftEmitter(game, 10, 'gift-freeze', 0, -1, 9200, 1, function(gift) {
 				var scoreIncrement = Math.round(gift.data.basePoints / Math.pow(gift.scale.x, 2));
 				freezeEndTime = game.time.time + 5000;
 				updateScore(scoreIncrement);
@@ -303,7 +303,7 @@ io.github.xmasshooter = (function () {
 
 			// Create an emitter for the double gifts
 
-			giftEmitters.double = createGiftEmitter(game, 1, 'gift-double', 400, -1, 2000, 1, function(gift) {
+			giftEmitters.double = createGiftEmitter(game, 10, 'gift-double', 400, -1, 8500, 1, function(gift) {
 				var scoreIncrement = Math.round(gift.data.basePoints / Math.pow(gift.scale.x, 2));
 				scoreMultiplicator = 2;
 				scoreMultiplicatorEndTime = game.time.time + 10000;
@@ -313,7 +313,7 @@ io.github.xmasshooter = (function () {
 
 	        // Create gift emmitter bomb gifta
 
-			giftEmitters.bomb = createGiftEmitter(game, 10, 'gift-bomb', -500, -1, 10000, 1, function(gift) {
+			giftEmitters.bomb = createGiftEmitter(game, 10, 'gift-bomb', -500, -1, 9900, 1, function(gift) {
 				var scoreIncrement = Math.round(gift.data.basePoints / Math.pow(gift.scale.x, 2)); 
 				updateScore(scoreIncrement);
 				updateLife(-1);
@@ -322,7 +322,7 @@ io.github.xmasshooter = (function () {
 
 	     	// Create gift emmiter watch
 
-			giftEmitters.watch = createGiftEmitter(game, 100, 'gift-watch', -500, -1, 1000, 2, function(gift) {
+			giftEmitters.watch = createGiftEmitter(game, 10, 'gift-watch', -500, -1, 10100, 2, function(gift) {
 				var scoreIncrement = Math.round(gift.data.basePoints / Math.pow(gift.scale.x, 2)); 
 				updateScore(scoreIncrement);
 				updateRemainingTime(10);
@@ -331,7 +331,7 @@ io.github.xmasshooter = (function () {
 
 			// Create gift clock emitter
 
-			giftEmitters.clock = createGiftEmitter(game, 100, 'gift-clock', -500, -1, 1000, 2, function(gift) {
+			giftEmitters.clock = createGiftEmitter(game, 10, 'gift-clock', -500, -1, 8200, 2, function(gift) {
 				var scoreIncrement = Math.round(gift.data.basePoints / Math.pow(gift.scale.x, 2)); 
 				updateScore(scoreIncrement);
 				updateRemainingTime(-50);
@@ -340,7 +340,7 @@ io.github.xmasshooter = (function () {
 			
 			// Create an emitter for the glasses gifts
 
-			giftEmitters.glasses = createGiftEmitter(game, 150, 'gift-glasses', 0, -1, 1000, 2, function(gift) {
+			giftEmitters.glasses = createGiftEmitter(game, 10, 'gift-glasses', 0, -1, 8000, 2, function(gift) {
 				var scoreIncrement = Math.round(gift.data.basePoints / Math.pow(gift.scale.x, 2));
 				blurEndTime = game.time.time + 5000;
 				updateScore(scoreIncrement);
@@ -349,7 +349,7 @@ io.github.xmasshooter = (function () {
 			
 			// Create ink gift emitter
 
-			giftEmitters.ink = createGiftEmitter(game, 150, 'gift-ink', 0, -1, 1000, 2, function(gift) {
+			giftEmitters.ink = createGiftEmitter(game, 10, 'gift-ink', 0, -1, 12000, 2, function(gift) {
 				var scoreIncrement = Math.round(gift.data.basePoints / Math.pow(gift.scale.x, 2));
 				splashEndTime = game.time.time + 5000;
 				updateScore(scoreIncrement);
