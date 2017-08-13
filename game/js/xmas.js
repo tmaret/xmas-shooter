@@ -230,9 +230,9 @@
     	blurX.blur = 10;
     	blurY.blur = 10;
 
-		// Create an emitter for the compass gifts
+		// Create an emitter for the speedup gifts
 
-		giftEmitters.compass = createGiftEmitter(game, 100, 'gift-speedup', 50, -1, 1000, 2, function(gift) {
+		giftEmitters.speedup = createGiftEmitter(game, 100, 'gift-speedup', 50, -1, 1000, 2, function(gift) {
 			var scoreIncrement = Math.round(gift.data.basePoints / Math.pow(gift.scale.x, 2)); 
 			speedupEndTime = game.time.time + 5000;
 			updateScore(scoreIncrement);
