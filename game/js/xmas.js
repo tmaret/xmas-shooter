@@ -18,8 +18,15 @@
  * @author manou.maret@gmail.com
  * @author timothee.maret@gmail.com
  */
- window.onload = function() {
+
+var io = io || {};
+io.github = io.github || {};
+
+io.github.xmasshooter = (function () {
+
+	var Game = function (baseUrl) {
  	
+ 	baseUrl = baseUrl || '';
 
  	var giftEmitters = {};
 
@@ -63,6 +70,10 @@
 		min = Math.ceil(min);
 	  	max = Math.floor(max);
 	  	return Math.floor(Math.random() * (max - min)) + min;
+	}
+
+	function resolveUrl(path) {
+		return baseUrl + path;
 	}
 
 
@@ -183,27 +194,27 @@
      */
  	function preload (game){
  		console.log("preload");
-		game.load.spritesheet('gift-parcel', 'data/gift-parcel.png', 65, 65, 3);
-		game.load.image('gift-basic', 'data/gift-basic.png');
-		game.load.image('gift-candy', 'data/gift-candy.png');
-		game.load.image('gift-clock', 'data/gift-clock.png');
-		game.load.image('gift-compass', 'data/gift-compass.png');
-		game.load.image('gift-double', 'data/gift-double.png');
-		game.load.image('gift-freeze', 'data/gift-freeze.png');
-		game.load.image('gift-glasses', 'data/gift-glasses.png');
-		game.load.image('gift-ink', 'data/gift-ink.png');
-		game.load.image('gift-magnet', 'data/gift-magnet.png');
-		game.load.image('gift-pointer', 'data/gift-pointer.png');
-		game.load.image('gift-mushroom', 'data/gift-mushroom.png');
-		game.load.image('gift-potion', 'data/gift-potion.png');
-		game.load.image('gift-speedup', 'data/gift-speedup.png');
-		game.load.image('gift-thief', 'data/gift-thief.png');
-		game.load.image('gift-watch', 'data/gift-watch.png');
-		game.load.image('gift-bomb', 'data/gift-bomb.png');	
-		game.load.image('gameover', 'data/gameover.gif');
-		game.load.image('ink-splash', 'data/ink-splash.png');
-		game.load.script('BlurX', 'https://cdn.rawgit.com/photonstorm/phaser/master/v2/filters/BlurX.js');
-    	game.load.script('BlurY', 'https://cdn.rawgit.com/photonstorm/phaser/master/v2/filters/BlurY.js');
+		game.load.spritesheet('gift-parcel', resolveUrl('data/gift-parcel.png'), 65, 65, 3);
+		game.load.image('gift-basic', resolveUrl('data/gift-basic.png'));
+		game.load.image('gift-candy', resolveUrl('data/gift-candy.png'));
+		game.load.image('gift-clock', resolveUrl('data/gift-clock.png'));
+		game.load.image('gift-compass', resolveUrl('data/gift-compass.png'));
+		game.load.image('gift-double', resolveUrl('data/gift-double.png'));
+		game.load.image('gift-freeze', resolveUrl('data/gift-freeze.png'));
+		game.load.image('gift-glasses', resolveUrl('data/gift-glasses.png'));
+		game.load.image('gift-ink', resolveUrl('data/gift-ink.png'));
+		game.load.image('gift-magnet', resolveUrl('data/gift-magnet.png'));
+		game.load.image('gift-pointer', resolveUrl('data/gift-pointer.png'));
+		game.load.image('gift-mushroom', resolveUrl('data/gift-mushroom.png'));
+		game.load.image('gift-potion', resolveUrl('data/gift-potion.png'));
+		game.load.image('gift-speedup', resolveUrl('data/gift-speedup.png'));
+		game.load.image('gift-thief', resolveUrl('data/gift-thief.png'));
+		game.load.image('gift-watch', resolveUrl('data/gift-watch.png'));
+		game.load.image('gift-bomb', resolveUrl('data/gift-bomb.png'));	
+		game.load.image('gameover', resolveUrl('data/gameover.gif'));
+		game.load.image('ink-splash', resolveUrl('data/ink-splash.png'));
+		game.load.script('BlurX', resolveUrl('filters/BlurX.js'));
+    	game.load.script('BlurY', resolveUrl('filters/BlurY.js'));
  	}
 
 	/**
@@ -438,4 +449,12 @@
  			}
 		}
 	}
- }
+
+	}
+
+
+	return {
+		Game: Game
+	};
+
+ } ());
