@@ -94,7 +94,7 @@
  	}
 
  	function updateRemainingTime(increment) {
- 		remainingTime += increment;
+ 		remainingTime = Math.max(0, remainingTime + increment);
  		remainingTimeText.text = 'Time : ' + remainingTime + ' sec';
  		if (remainingTime == 0) {
  			gameover();
@@ -298,13 +298,21 @@
 			gift.kill();
 		});
 
-     	//create gift emmiter watch
-
+     	// Create gift emmiter watch
 
 		giftEmitters.watch = createGiftEmitter(game, 100, 'gift-watch', -500, -1, 1000, 2, function(gift) {
 			var scoreIncrement = Math.round(gift.data.basePoints / Math.pow(gift.scale.x, 2)); 
 			updateScore(scoreIncrement);
 			updateRemainingTime(10);
+			gift.kill();
+		});
+
+		// Create gift clock emitter
+
+		giftEmitters.clock = createGiftEmitter(game, 100, 'gift-clock', -500, -1, 1000, 2, function(gift) {
+			var scoreIncrement = Math.round(gift.data.basePoints / Math.pow(gift.scale.x, 2)); 
+			updateScore(scoreIncrement);
+			updateRemainingTime(-5);
 			gift.kill();
 		});
 		
@@ -317,7 +325,7 @@
 			gift.kill();
 		});
 		
-		//ink gift emitter
+		// Create ink gift emitter
 
 		giftEmitters.ink = createGiftEmitter(game, 150, 'gift-ink', 0, -1, 1000, 2, function(gift) {
 			var scoreIncrement = Math.round(gift.data.basePoints / Math.pow(gift.scale.x, 2));
@@ -325,7 +333,6 @@
 			updateScore(scoreIncrement);
 			gift.kill();
 		});
-
 
 		// Create splash sprite
 
