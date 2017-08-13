@@ -367,7 +367,7 @@ io.github.xmasshooter = (function () {
 	    	timer.loop(1000, function() {
 	    		updateRemainingTime(-1);
 	    	}, this);
-	    	remainingTimeText = game.add.text(640, 40, '', {font: '34px Arial', fill: '#FFF'} );
+	    	remainingTimeText = game.add.text(screenWidth/3, 10, '', {font: '34px Arial', fill: '#FFF'} );
 	    	updateRemainingTime(0);
 	    	timer.start();
 
