@@ -214,6 +214,7 @@ io.github.xmasshooter = (function () {
 			game.load.image('gameover', resolveUrl('data/gameover.gif'));
 			game.load.image('ink-splash', resolveUrl('data/ink-splash.png'));
 			game.load.image('background', resolveUrl('data/background.png'));
+			game.load.image('background2', resolveUrl('data/background2.png'));
 			game.load.script('BlurX', resolveUrl('filters/BlurX.js'));
 	    	game.load.script('BlurY', resolveUrl('filters/BlurY.js'));
 	 	}
@@ -222,6 +223,7 @@ io.github.xmasshooter = (function () {
 	     * Function called by Phaser once, when creating the game (after the preload method).
 		 */
 		function create (game){
+
 	  		console.log("create");
 	 		setFullScreen(game);
 
@@ -234,6 +236,8 @@ io.github.xmasshooter = (function () {
 
 	 		game.add.tileSprite(0, 0, screenWidth, screenHeight, 'background');
 
+   			endBackground = game.add.tileSprite(0, 0, screenWidth, screenHeight, 'background2');
+   			endBackground.visible = false
 
 	 		scoreText = game.add.text(10, 10, '', {font: '34px Arial', fill: '#FFF'} );
 	 		updateScore(0);
@@ -330,7 +334,7 @@ io.github.xmasshooter = (function () {
 			giftEmitters.clock = createGiftEmitter(game, 100, 'gift-clock', -500, -1, 1000, 2, function(gift) {
 				var scoreIncrement = Math.round(gift.data.basePoints / Math.pow(gift.scale.x, 2)); 
 				updateScore(scoreIncrement);
-				updateRemainingTime(-5);
+				updateRemainingTime(-50);
 				gift.kill();
 			});
 			
@@ -386,8 +390,14 @@ io.github.xmasshooter = (function () {
 		function update (game){
 
 			var gameTime = game.time.time;
-	 		
+
+			if(endGame == true){
+				endBackground.visible = true;
+			}
+
+
 	 		if(endGame == false){
+	 		
 
 
 	 			// Manage the emitters state
