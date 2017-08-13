@@ -250,9 +250,9 @@
 			gift.kill();
 		});
 		
-		// Create an emitter for the blur gifts
+		// Create an emitter for the glasses gifts
 
-		giftEmitters.blur = createGiftEmitter(game, 150, 'gift-ink', 0, -1, 1000, 2, function(gift) {
+		giftEmitters.glasses = createGiftEmitter(game, 150, 'gift-glasses', 0, -1, 1000, 2, function(gift) {
 			var scoreIncrement = Math.round(gift.data.basePoints / Math.pow(gift.scale.x, 2));
 			blurEndTime = game.time.time + 5000;
 			updateScore(scoreIncrement);
