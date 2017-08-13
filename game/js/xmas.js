@@ -58,6 +58,9 @@ io.github.xmasshooter = (function () {
 
 		var speedupEndTime = 0;
 
+		var comment = ''
+		var commentText;
+
 
 	 	var screenWidth = 800, screenHeight = 600, worldWidth = 1.25 * screenWidth;
 	 	var game = new Phaser.Game(/*width*/screenWidth, /*height*/screenHeight, /*render*/Phaser.AUTO, /*parent*/'',
@@ -150,6 +153,11 @@ io.github.xmasshooter = (function () {
 
 	 		// stop timer
 	 		timer.stop();
+
+
+	 		if(score < 1000){
+	 			game.add.text(10, 10, 'You have been a naughty child', {font: '34px Arial', fill: '#FFF'} );
+	 		}
 	 	}
 
 	 	function blurEmitter(emitter){
@@ -215,6 +223,12 @@ io.github.xmasshooter = (function () {
 			game.load.image('ink-splash', resolveUrl('data/ink-splash.png'));
 			game.load.image('background', resolveUrl('data/background.png'));
 			game.load.image('background2', resolveUrl('data/background2.png'));
+			game.load.image('giftstar1', resolveUrl('data/giftstar1.png'));
+			game.load.image('giftstar2', resolveUrl('data/giftstar2.png'));
+			game.load.image('giftstar3', resolveUrl('data/giftstar3.png'));
+			game.load.image('giftstar4', resolveUrl('data/giftstar4.png'));
+			game.load.image('giftstar5', resolveUrl('data/giftstar5.png'));
+			game.load.image('santa', resolveUrl('data/santa.png'));
 			game.load.script('BlurX', resolveUrl('filters/BlurX.js'));
 	    	game.load.script('BlurY', resolveUrl('filters/BlurY.js'));
 	 	}
@@ -245,6 +259,8 @@ io.github.xmasshooter = (function () {
 
 	 		lifeText = game.add.text(640, 10, '', {font: '34px Arial', fill: '#FFF'} );
 	 		updateLife(0);
+
+
 
 	 		// blur filter config
 
