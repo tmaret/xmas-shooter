@@ -59,7 +59,6 @@ io.github.xmasshooter = (function () {
 		var speedupEndTime = 0;
 
 
-
 	 	var screenWidth = 800, screenHeight = 600, worldWidth = 1.25 * screenWidth;
 	 	var game = new Phaser.Game(/*width*/screenWidth, /*height*/screenHeight, /*render*/Phaser.AUTO, /*parent*/'',
 	 		/*state*/{preload: preload, create: create, render: render, update: update},
@@ -214,6 +213,7 @@ io.github.xmasshooter = (function () {
 			game.load.image('gift-bomb', resolveUrl('data/gift-bomb.png'));	
 			game.load.image('gameover', resolveUrl('data/gameover.gif'));
 			game.load.image('ink-splash', resolveUrl('data/ink-splash.png'));
+			game.load.image('background', resolveUrl('data/background.png'));
 			game.load.script('BlurX', resolveUrl('filters/BlurX.js'));
 	    	game.load.script('BlurY', resolveUrl('filters/BlurY.js'));
 	 	}
@@ -232,6 +232,9 @@ io.github.xmasshooter = (function () {
 
 	 		game.world.setBounds(0, 0, worldWidth, screenHeight);
 
+	 		game.add.tileSprite(0, 0, screenWidth, screenHeight, 'background');
+
+
 	 		scoreText = game.add.text(10, 10, '', {font: '34px Arial', fill: '#FFF'} );
 	 		updateScore(0);
 
@@ -245,6 +248,8 @@ io.github.xmasshooter = (function () {
 			blurY = game.add.filter('BlurY');
 	    	blurX.blur = 10;
 	    	blurY.blur = 10;
+
+
 
 			// Create an emitter for the speedup gifts
 
